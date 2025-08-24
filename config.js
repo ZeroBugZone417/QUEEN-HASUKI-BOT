@@ -7,7 +7,12 @@ function convertToBool(text, fault = 'true') {
 module.exports = {
 SESSION_ID: process.env.SESSION_ID || "",
 ALIVE_IMG: process.env.ALIVE_IMG || "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/LOGO.png?raw=true",
-ALIVE_MSG: process.env.ALIVE_MSG || "*Hello👋 DANUWA-MD Is Alive Now😍*",
+ALIVE_MSG: process.env.ALIVE_MSG || "*💥 Bot Status: ONLINE ✅  
+Hey! I’m your WhatsApp Bot, awake and ready for action.  
+Type any command or question, and I’ll get back to you instantly! ⚡  
+
+Stay tuned for updates, enjoy seamless chatting, and let’s make your experience awesome! 😎
+😍*",
 BOT_OWNER: '94776121326',  // Replace with the owner's phone number
 
 
