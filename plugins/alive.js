@@ -24,14 +24,11 @@ cmd(
           },
           caption: `💥 Bot Status: ONLINE ✅ 
   
-*Hey! I’m your WhatsApp Bot, awake and ready for action.*  
+*Hey! I’m your WhatsApp Bot, awake and ready for action.* 
+
 *Type any command or question, and I’ll get back to you instantly! ⚡* 
-*Stay tuned for updates, enjoy seamless chatting, and let’s make your experience awesome! 😎*
-          
-*We are not responsible for any*  
-*WhatsApp bans that may occur due to*  
-*the usage of this bot. Use it wisely*  
-*and at your own risk* ⚠️`,
+
+*Stay tuned for updates, enjoy seamless chatting, and let’s make your experience awesome! 😎*`,
         },
         { quoted: mek }
       );
