@@ -1,13 +1,12 @@
 {
-  "name": "queen-hasuki-v1",
+  "name": "QUEEN-HASUKI",
   "version": "1.0.0",
-  "description": "WhatsApp Anime Bot - Queen Hasuki V1",
+  "description": "A Powerfull Whatsapp Bot",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start index.js --name queen-hasuki",
-    "stop": "pm2 stop queen-hasuki",
-    "restart": "pm2 restart queen-hasuki",
-    "dev": "node index.js"
+    "start": "pm2 start index.js --deep-monitoring --attach --name QUEEN-HASUKI",
+    "stop": "pm2 stop QUEEN-HASUKI",
+    "restart": "pm2 restart QUEEN-HASUKI"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.16",
