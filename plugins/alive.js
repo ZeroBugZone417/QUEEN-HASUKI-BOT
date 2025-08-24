@@ -20,15 +20,13 @@ cmd(
         from,
         {
           image: {
-            url: "https://i.ibb.co/SDWZFh23/malvin-xd.jpg",
+            url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/LOGO.png?raw=true",
           },
-          caption: `𝗠𝗔𝗟𝗨 𝗫𝗗 𝗜𝗦 𝗔𝗟𝗜𝗩𝗘 𝗡𝗢𝗪  
+          caption: `💥 Bot Status: ONLINE ✅ 
   
-𝗼𝗳𝗳𝗶𝗰𝗶𝗮𝗹 𝘄𝗵𝗮𝘁𝘀𝗮𝗽𝗽 𝗰𝗵𝗮𝗻𝗲𝗹 -: https://whatsapp.com/channel/0029VbB3YxTDJ6H15SKoBv3S
-
-𝗚𝗶𝘁 𝗛𝘂𝗯 𝗥𝗲𝗽𝗼 -: https://github.com/XdKing2/MALU-XD
-
-𝗢𝘄𝗻𝗲𝗿 -: https://t.me/devmalvin
+*Hey! I’m your WhatsApp Bot, awake and ready for action.*  
+*Type any command or question, and I’ll get back to you instantly! ⚡* 
+*Stay tuned for updates, enjoy seamless chatting, and let’s make your experience awesome! 😎*
           
 *We are not responsible for any*  
 *WhatsApp bans that may occur due to*  
