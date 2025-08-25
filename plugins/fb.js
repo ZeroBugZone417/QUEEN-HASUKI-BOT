@@ -57,8 +57,7 @@ cmd(
       const bestQualityUrl = hd || sd;
       const qualityText = hd ? "HD" : "SD";
 
-      const desc = `
-Your fb video
+      const desc = `꧁༺Hasuki FB Video Downloader༻꧂
 👻 *Title*: ${title || "Unknown"}
 👻 *Quality*: ${qualityText}
 `;
@@ -83,7 +82,7 @@ Your fb video
         { quoted: mek }
       );
 
-      return reply("Thank you for using hasuki-MD");
+      return reply("𝚃𝚑𝚊𝚗𝚔 𝚢𝚘𝚞 𝚏𝚘𝚛 𝚞𝚜𝚒𝚗𝚐 𝚑𝚊𝚜𝚞𝚔𝚒-𝙼𝙳");
     } catch (e) {
       console.error(e);
       reply(`*Error:* ${e.message || e}`);
