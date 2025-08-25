@@ -22,13 +22,19 @@ cmd(
           image: {
             url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/LOGO.png?raw=true",
           },
-          caption: `💥 Bot Status: ONLINE ✅ 
+          caption: `👑 Queen Hasuki 👑
+━━━━━━━━━━━━━━━
+
+💥 Bot Status: ONLINE ✅
   
-*Hey! I’m your WhatsApp Bot, awake and ready for action.* 
+Hey! I’m your WhatsApp Bot, awake and ready for action.  
 
-*Type any command or question, and I’ll get back to you instantly! ⚡* 
+Type any command or question, and I’ll get back to you instantly! ⚡  
 
-*Stay tuned for updates, enjoy seamless chatting, and let’s make your experience awesome! 😎*`,
+Stay tuned for updates, enjoy seamless chatting, and let’s make your experience awesome! 😎  
+
+━━━━━━━━━━━━━━━
+🛡©Zero Bug Zone 🛡`,
         },
         { quoted: mek }
       );
