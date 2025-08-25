@@ -1,103 +1,86 @@
-const { cmd, commands } = require("../command");
+const { cmd } = require("../command");
 const yts = require("yt-search");
 const { ytmp3 } = require("@vreden/youtube_scraper");
+const axios = require("axios");
 
 cmd(
   {
     pattern: "song",
     react: "🎶",
-    desc: "Download Song",
+    desc: "Download Song from YouTube",
     category: "download",
     filename: __filename,
   },
-  async (
-    hasuki,
-    mek,
-    m,
-    {
-      from,
-      quoted,
-      body,
-      isCmd,
-      command,
-      args,
-      q,
-      isGroup,
-      sender,
-      senderNumber,
-      botNumber2,
-      botNumber,
-      pushname,
-      isMe,
-      isOwner,
-      groupMetadata,
-      groupName,
-      participants,
-      groupAdmins,
-      isBotAdmins,
-      isAdmins,
-      reply,
-    }
-  ) => {
+  async (hasuki, mek, m, { from, q, reply }) => {
     try {
-      if (!q) return reply("❌ *Please provide a song name or YouTube link*");
+      if (!q) return reply("❌ Please provide a song name or YouTube link");
 
       const search = await yts(q);
       const data = search.videos[0];
-      const url = data.url;
+      if (!data) return reply("❌ No results found");
 
+      const url = data.url;
       let desc = `
-Song downloader
-🎬 *Title:* ${data.title}
-⏱️ *Duration:* ${data.timestamp}
-📅 *Uploaded:* ${data.ago}
-👀 *Views:* ${data.views.toLocaleString()}
-🔗 *Watch Here:* ${data.url}
+🎵 *Song Downloader*
+🎬 Title: ${data.title}
+⏱️ Duration: ${data.timestamp}
+📅 Uploaded: ${data.ago}
+👀 Views: ${data.views.toLocaleString()}
+🔗 Watch Here: ${data.url}
 `;
 
-      await hasuki.sendMessage(
-        from,
-        { image: { url: data.thumbnail }, caption: desc },
-        { quoted: mek }
+      // Send video info with buttons
+      const buttons = [
+        { buttonId: `.songnow ${url}`, buttonText: { displayText: "📥 Download Audio" }, type: 1 },
+        { buttonId: `.songdoc ${url}`, buttonText: { displayText: "📁 Download as File" }, type: 1 },
+      ];
+
+      const buttonMessage = {
+        image: { url: data.thumbnail },
+        caption: desc,
+        footer: "✨ Queen Hasuki Bot ✨",
+        buttons,
+        headerType: 4,
+      };
+
+      await hasuki.sendMessage(from, buttonMessage, { quoted: mek });
+
+      // Button handlers
+      cmd(
+        { pattern: "songnow", dontAddCommandList: true },
+        async (hasuki, mek, m, { args }) => {
+          const songData = await ytmp3(args[0], "192");
+          const audioRes = await axios.get(songData.download.url, { responseType: "arraybuffer" });
+
+          await hasuki.sendMessage(
+            from,
+            { audio: { buffer: audioRes.data, mimetype: "audio/mpeg" } },
+            { quoted: mek }
+          );
+        }
       );
 
-      const quality = "192";
-      const songData = await ytmp3(url, quality);
+      cmd(
+        { pattern: "songdoc", dontAddCommandList: true },
+        async (hasuki, mek, m, { args }) => {
+          const songData = await ytmp3(args[0], "192");
+          const audioRes = await axios.get(songData.download.url, { responseType: "arraybuffer" });
 
-      let durationParts = data.timestamp.split(":").map(Number);
-      let totalSeconds =
-        durationParts.length === 3
-          ? durationParts[0] * 3600 + durationParts[1] * 60 + durationParts[2]
-          : durationParts[0] * 60 + durationParts[1];
-
-      if (totalSeconds > 1800) {
-        return reply("⏳ *Sorry, audio files longer than 30 minutes are not supported.*");
-      }
-
-      await hasuki.sendMessage(
-        from,
-        {
-          audio: { url: songData.download.url },
-          mimetype: "audio/mpeg",
-        },
-        { quoted: mek }
+          await hasuki.sendMessage(
+            from,
+            {
+              document: { buffer: audioRes.data, mimetype: "audio/mpeg" },
+              fileName: `${data.title}.mp3`,
+              caption: "🎶 Your song is ready!",
+            },
+            { quoted: mek }
+          );
+        }
       );
 
-      await hasuki.sendMessage(
-        from,
-        {
-          document: { url: songData.download.url },
-          mimetype: "audio/mpeg",
-          fileName: `${data.title}.mp3`,
-          caption: "🎶 *Your song is ready to be played!*",
-        },
-        { quoted: mek }
-      );
-
-      return reply("✅ Thank you");
     } catch (e) {
       console.log(e);
-      reply(`❌ *Error:* ${e.message} 😞`);
+      reply(`❌ Error: ${e.message || e}`);
     }
   }
 );
