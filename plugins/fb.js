@@ -1,92 +1,43 @@
-const { cmd, commands } = require("../command");
-const getFbVideoInfo = require("@xaviabot/fb-downloader");
+const { cmd } = require("../command");
+const fetch = require("node-fetch");
 
 cmd(
   {
     pattern: "fb",
-    alias: ["facebook"],
-    react: "✅",
-    desc: "Download Facebook Video",
+    react: "📘",
+    desc: "Download Facebook video",
     category: "download",
     filename: __filename,
   },
-  async (
-    danuwa,
-    mek,
-    m,
-    {
-      from,
-      quoted,
-      body,
-      isCmd,
-      command,
-      args,
-      q,
-      isGroup,
-      sender,
-      senderNumber,
-      botNumber2,
-      botNumber,
-      pushname,
-      isMe,
-      isOwner,
-      groupMetadata,
-      groupName,
-      participants,
-      groupAdmins,
-      isBotAdmins,
-      isAdmins,
-      reply,
-    }
-  ) => {
+  async (malvin, mek, m, { from, args, reply }) => {
+    const url = args[0];
+    if (!url || !url.includes("facebook.com"))
+      return reply("❌ *Please provide a valid Facebook video link.*");
+
     try {
-      if (!q) return reply("*Please provide a valid Facebook video URL!* ❤️");
+      reply("🔎 Fetching Facebook video...");
 
-      const fbRegex = /(https?:\/\/)?(www\.)?(facebook|fb)\.com\/.+/;
-      if (!fbRegex.test(q))
-        return reply("*Invalid Facebook URL! Please check and try again.* ☹️");
+      const api = `https://api.radiaa.repl.co/api/fb?url=${encodeURIComponent(url)}`;
+      const response = await fetch(api);
+      if (!response.ok) throw new Error("API request failed");
 
-      reply("*Downloading your video...* ❤️");
+      const data = await response.json();
+      const { hd, sd, title } = data.result;
+      if (!hd && !sd) return reply("❌ Video not found or not public.");
 
-      const result = await getFbVideoInfo(q);
-      if (!result || (!result.sd && !result.hd)) {
-        return reply("*Failed to download video. Please try again later.* ☹️");
-      }
+      const videoUrl = hd || sd;
 
-      const { title, sd, hd } = result;
-      const bestQualityUrl = hd || sd;
-      const qualityText = hd ? "HD" : "SD";
-
-      const desc = `
-Your fb video
-👻 *Title*: ${title || "Unknown"}
-👻 *Quality*: ${qualityText}
-`;
-
-      await danuwa.sendMessage(
+      await malvin.sendMessage(
         from,
         {
-          image: {
-            url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/LOGO.png?raw=true",
-          },
-          caption: desc,
+          video: { url: videoUrl },
+          caption: `📘 *${title || "Facebook Video"}*\n\n_*𝗠𝗔𝗟𝗨 𝗫𝗗 𝙁𝘽 𝘿𝙊𝙒𝙉𝙇𝙊𝘿𝙀𝙍*_`,
         },
         { quoted: mek }
       );
-
-      await danuwa.sendMessage(
-        from,
-        {
-          video: { url: bestQualityUrl },
-          caption: `*📥 Downloaded in ${qualityText} quality*`,
-        },
-        { quoted: mek }
-      );
-
-      return reply("Thank you for using DANUWA-MD");
     } catch (e) {
       console.error(e);
-      reply(`*Error:* ${e.message || e}`);
+      reply(`❌ *Failed to download:* ${e.message}`);
     }
   }
 );
