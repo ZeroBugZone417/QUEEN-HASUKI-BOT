@@ -1,62 +1,107 @@
 const { cmd } = require("../command");
 const yts = require("yt-search");
+const axios = require("axios");
 
 cmd(
   {
-    pattern: "yts",
-    alias: ["yts", "youtubesearch"],
-    react: "🔎",
-    desc: "Search YouTube videos",
-    category: "search",
+    pattern: "song",
+    react: "🎵",
+    desc: "Download YouTube Audio",
+    category: "download",
     filename: __filename,
   },
-  async (
-    danuwa,
-    mek,
-    m,
-    {
-      from,
-      quoted,
-      q,
-      reply,
-    }
-  ) => {
+  async (malvin, mek, m, { from, args, reply }) => {
     try {
-      if (!q) return reply("*Please provide a search query!* 🔍");
+      const q = args.join(" ");
+      if (!q) return reply("*Provide a name or a YouTube link.* 🎵❤️");
 
-      reply("*Searching YouTube for you...* ⌛");
-
-      const search = await yts(q);
-
-      if (!search || !search.all || search.all.length === 0) {
-        return reply("*No results found on YouTube.* ☹️");
+      // 1) Find the URL
+      let url = q;
+      try {
+        url = new URL(q).toString();
+      } catch {
+        const s = await yts(q);
+        if (!s?.videos?.length) return reply("❌ No videos found!");
+        url = s.videos[0].url;
       }
 
-      const results = search.videos.slice(0, 10); 
-      let formattedResults = results.map((v, i) => (
-        `🎬 *${i + 1}. ${v.title}*\n📅 ${v.ago} | ⌛ ${v.timestamp} | 👁️ ${v.views.toLocaleString()} views\n🔗 ${v.url}`
-      )).join("\n\n");
+      // 2) Validate URL
+      if (!url.includes("youtube.com") && !url.includes("youtu.be")) {
+        return reply("❌ Invalid YouTube URL!");
+      }
 
-      const caption = `  
-Your youtube search results
-─────────────────────────
-🔎 *Query*: ${q}
-${formattedResults}
-   `;
+      // 3) Fetch metadata
+      let info;
+      try {
+        const searchResult = await yts(url);
+        if (!searchResult?.videos?.length) {
+          return reply("❌ Failed to fetch video metadata!");
+        }
+        info = searchResult.videos[0];
+      } catch (e) {
+        console.error("Metadata fetch error:", e);
+        return reply("❌ Error fetching video metadata: " + e.message);
+      }
 
-      await danuwa.sendMessage(
+      // 4) Send metadata + thumbnail
+      const desc = `
+🧩 *QUEEN HASUKI AUDIO DOWNLOADER* 🧩
+
+📌 *Title:* ${info.title || "Unknown"}
+⏱️ *Uploaded:* ${info.timestamp || "N/A"} (${info.ago || "N/A"})
+👀 *Views:* ${info.views?.toLocaleString() || "N/A"}
+🔗 *Download URL:* ${info.url || url}
+
+━━━━━━━━━━━━━━━━━━
+*ZERO BUG ZONE🪀*
+      `.trim();
+
+      await malvin.sendMessage(
+        from,
+        { image: { url: info.thumbnail || "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/LOGO.png?raw=true" }, caption: desc },
+        { quoted: mek }
+      );
+
+      // 5) Audio download helper
+      const downloadAudio = async (videoUrl, quality = "mp3") => {
+        const apiUrl = `https://p.oceansaver.in/ajax/download.php?format=${quality}&url=${encodeURIComponent(
+          videoUrl
+        )}&api=dfcb6d76f2f6a9894gjkege8a4ab232222`;
+
+        const res = await axios.get(apiUrl);
+        if (!res.data.success) throw new Error("Failed to fetch audio details.");
+
+        const { id, title } = res.data;
+        const progressUrl = `https://p.oceansaver.in/ajax/progress.php?id=${id}`;
+
+        // Poll until ready
+        while (true) {
+          const prog = (await axios.get(progressUrl)).data;
+          if (prog.success && prog.progress === 1000) {
+            const audio = await axios.get(prog.download_url, { responseType: "arraybuffer" });
+            return { buffer: audio.data, title: title || info.title || "audio" };
+          }
+          await new Promise((r) => setTimeout(r, 5000));
+        }
+      };
+
+      // 6) Download + send
+      const { buffer, title } = await downloadAudio(url);
+      await malvin.sendMessage(
         from,
         {
-          image: {
-            url: "https://github.com/DANUWA-MD/DANUWA-MD/blob/main/images/yts.png?raw=true",
-          },
-          caption,
+          audio: buffer,
+          mimetype: "audio/mpeg",
+          ptt: false,
+          fileName: `${title}.mp3`,
         },
         { quoted: mek }
       );
-    } catch (err) {
-      console.error(err);
-      reply("*An error occurred while searching YouTube.* ❌");
+
+      reply("*Thanks for using my MP3 bot!* 🎵");
+    } catch (e) {
+      console.error("Error:", e);
+      reply(`❌ Error: ${e.message}`);
     }
   }
 );
