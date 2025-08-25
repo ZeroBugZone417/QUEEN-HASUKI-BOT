@@ -1,9 +1,9 @@
 const { cmd } = require("../command");
 const yts = require("yt-search");
-const { ytmp3 } = require("@vreden/youtube_scraper");
+const ytdl = require("ytdl-core");
 const axios = require("axios");
 
-// 🔹 Main .song command
+// 🔹 .song command
 cmd(
   {
     pattern: "song",
@@ -16,9 +16,13 @@ cmd(
     try {
       if (!q) return reply("❌ Please provide a song name or YouTube link");
 
+      // YouTube search
       const search = await yts(q);
       const data = search.videos[0];
       if (!data) return reply("❌ No results found");
+
+      // Validate URL
+      if (!ytdl.validateURL(data.url)) return reply("❌ Invalid YouTube URL");
 
       let desc = `
 🎵 *Song Downloader*
@@ -51,49 +55,72 @@ cmd(
   }
 );
 
-// 🔹 .songnow command → send audio as voice/music
+// 🔹 .songnow → send audio as voice/music
 cmd(
   { pattern: "songnow", dontAddCommandList: true },
   async (hasuki, mek, m, { args, from, reply }) => {
     try {
       if (!args[0]) return reply("❌ Provide a YouTube link!");
-      const songData = await ytmp3(args[0], "192");
-      const audioRes = await axios.get(songData.download.url, { responseType: "arraybuffer" });
+      if (!ytdl.validateURL(args[0])) return reply("❌ Invalid YouTube URL");
 
-      await hasuki.sendMessage(
-        from,
-        { audio: { buffer: audioRes.data, mimetype: "audio/mpeg" } },
-        { quoted: mek }
-      );
+      const stream = ytdl(args[0], { filter: 'audioonly', quality: 'highestaudio' });
+      const chunks = [];
+
+      stream.on('data', chunk => chunks.push(chunk));
+      stream.on('end', async () => {
+        const buffer = Buffer.concat(chunks);
+        await hasuki.sendMessage(
+          from,
+          { audio: { buffer, mimetype: "audio/mpeg" } },
+          { quoted: mek }
+        );
+      });
+
+      stream.on('error', err => {
+        console.log(err);
+        reply(`❌ Error downloading audio: ${err.message}`);
+      });
+
     } catch (e) {
       console.log(e);
-      reply(`❌ Error downloading audio: ${e.message || e}`);
+      reply(`❌ Error: ${e.message || e}`);
     }
   }
 );
 
-// 🔹 .songdoc command → send audio as document
+// 🔹 .songdoc → send audio as document
 cmd(
   { pattern: "songdoc", dontAddCommandList: true },
   async (hasuki, mek, m, { args, from, reply }) => {
     try {
       if (!args[0]) return reply("❌ Provide a YouTube link!");
-      const songData = await ytmp3(args[0], "192");
-      const audioRes = await axios.get(songData.download.url, { responseType: "arraybuffer" });
+      if (!ytdl.validateURL(args[0])) return reply("❌ Invalid YouTube URL");
 
-      await hasuki.sendMessage(
-        from,
-        {
-          document: { buffer: audioRes.data, mimetype: "audio/mpeg" },
-          fileName: `song.mp3`,
-          caption: "🎶 Your song is ready!",
-        },
-        { quoted: mek }
-      );
+      const stream = ytdl(args[0], { filter: 'audioonly', quality: 'highestaudio' });
+      const chunks = [];
+
+      stream.on('data', chunk => chunks.push(chunk));
+      stream.on('end', async () => {
+        const buffer = Buffer.concat(chunks);
+        await hasuki.sendMessage(
+          from,
+          {
+            document: { buffer, mimetype: "audio/mpeg" },
+            fileName: "song.mp3",
+            caption: "🎶 Your song is ready!",
+          },
+          { quoted: mek }
+        );
+      });
+
+      stream.on('error', err => {
+        console.log(err);
+        reply(`❌ Error downloading file: ${err.message}`);
+      });
+
     } catch (e) {
       console.log(e);
-      reply(`❌ Error sending file: ${e.message || e}`);
+      reply(`❌ Error: ${e.message || e}`);
     }
   }
 );
-
