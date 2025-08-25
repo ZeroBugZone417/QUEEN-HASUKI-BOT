@@ -1,53 +1,51 @@
 const { cmd } = require("../command");
 
-// ===== OWNER COMMAND =====
-
-// 🔹 Show bot owner info
+// ===== OWNER COMMAND WITH IMAGE, BUTTONS & vCard =====
 cmd(
   {
     pattern: "owner",
     react: "👑",
-    desc: "Show Bot Owner Info",
+    desc: "Show Bot Owner Info with Image and Contact",
     category: "owner",
     filename: __filename,
   },
   async (hasuki, mek, m, { from, reply }) => {
     try {
+      // Owner info text
       const ownerInfo = `
 👑 *Bot Owner Info*
-📝 Name: Queen Hasuki
-📱 WhatsApp: +947XXXXXXXX
+📝 Name: Dineth Sudarshana
+📱 WhatsApp: +94769983151
 💻 Role: Developer & Maintainer
-✨ Bot Version: 4.0
+🌐 GitHub: https://github.com/ZeroBugZone417
+📸 Instagram: https://instagram.com/DinethSudarshana
+✨ Bot Version: 1.0
 `;
-      await reply(ownerInfo);
-    } catch (e) {
-      console.log(e);
-      reply(`❌ Error: ${e.message || e}`);
-    }
-  }
-);
 
-// 🔹 Broadcast message to a number (example owner-only command)
-cmd(
-  {
-    pattern: "ownwr",
-    react: "📢",
-    desc: "owner info",
-    category: "owner data",
-    filename: __filename,
-  },
-  async (hasuki, mek, m, { from, args, reply }) => {
-    try {
-      const ownerNumber = "94769983151"; // Replace with your WhatsApp number
-      if (m.sender !== ownerNumber + "@s.whatsapp.net") return reply("❌ Only owner can use this command");
+      // Buttons
+      const buttons = [
+        { buttonId: ".owner", buttonText: { displayText: "📇 Contact" }, type: 1 },
+        { buttonId: ".bc", buttonText: { displayText: "📢 Broadcast" }, type: 1 },
+      ];
 
-      const message = args.join(" ");
-      if (!message) return reply("❌ Please provide a message to broadcast");
+      // Send vCard contact
+      const vcard = `
+BEGIN:VCARD
+VERSION:3.0
+FN:Dineth Sudarshana
+TEL;waid=94769983151:+94769983151
+END:VCARD
+`;
 
-      // Example: send message to a specific chat
-      await hasuki.sendMessage(from, { text: `📢 Broadcast from owner:\n\n${message}` });
-      await reply("✅ Broadcast sent!");
+      // Send message with image, caption, buttons & contact
+      await hasuki.sendMessage(from, {
+        image: { url: "https://i.imgur.com/yourImage.jpg" }, // replace with owner image URL
+        caption: ownerInfo,
+        buttons,
+        headerType: 4,
+        contacts: { displayName: "Dineth Sudarshana", contacts: [{ vcard }] },
+      }, { quoted: mek });
+
     } catch (e) {
       console.log(e);
       reply(`❌ Error: ${e.message || e}`);
