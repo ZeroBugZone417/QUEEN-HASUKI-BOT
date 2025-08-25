@@ -1,55 +1,58 @@
+const Aqua = require('../events');
+const { MessageType, Mimetype } = require('@adiwajshing/baileys');
 const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
-
-async function facebookCommand(sock, chatId, message) {
-    try {
-        const text = message.message?.conversation || message.message?.extendedTextMessage?.text;
-        const url = text.split(' ').slice(1).join(' ').trim();
-        
-        if (!url) {
-            return await sock.sendMessage(chatId, { 
-                text: "Please provide a Facebook video URL.\nExample: .fb https://www.facebook.com/..."
-            });
+const Config = require('../config');
+let wk = Config.WORKTYPE == 'public' ? false : true
+const Language = require('../language');
+const Lang = Language.getString('facebook');
+Aqua.addCommand({ pattern: 'fb ?(.*)', fromMe: wk, desc:Lang.FB_DESC, deleteCommand: false }, async (message, match) => {
+   const fblink = match[1]
+   if (!fblink) return await message.client.sendMessage(message.jid,Lang.N_FB, MessageType.text, { quoted: message.data });
+  var load= await message.client.sendMessage(message.jid,Lang.FB_DOWN, MessageType.text, { quoted: message.data });
+  await axios.get(`https://sanuw-api.herokuapp.com/docs/download/fb?url=${fblink}&apikey=sanuwa`).then(async (response) => {
+    if(!response.data.status) {
+       const res =  await axios.get(`https://sanuw-api.herokuapp.com/docs/download/facebook?url=${fblink}&apikey=sanuwa`)
+        const link = res.data.result.HD_URL
+       if(!link.includes('https')) {
+          const res3 = await axios.get(`https://masgimenz.my.id/facebook/?url=${match[1]}`)
+          const status = res3.data.status
+          if(!status == true) {  return await message.client.sendMessage(message.jid,Lang.E_FB, MessageType.text, { quoted: message.data }); }
+          else {
+    var up= await message.client.sendMessage(message.jid,Lang.FB_UP, MessageType.text, { quoted: message.data });
+    await message.client.deleteMessage(message.jid, {id: load.key.id, remoteJid: message.jid, fromMe: true}) ; 
+    var msg = ''
+     if (Config.DETAILS == 'true') msg = '┌───[🐋𝙰𝚀𝚄𝙰𝙱𝙾𝚃🐋]\n\n  *📥FACEBOOK DOWNLODER*\n\n│🎪ᴛɪᴛʟᴇ: ' + res3.data.title + '\n\n└───────────◉'
+     if (Config.DETAILS == 'false') msg = Config.CAPTION       
+    const viddata = await axios.get(res3.data.videoUrl, { responseType: 'arraybuffer'}); 
+    await message.sendMessage(Buffer.from(viddata.data), MessageType.video, { caption: msg, quoted: message.data}); 
+    await message.client.deleteMessage(message.jid, {id: up.key.id, remoteJid: message.jid, fromMe: true}) ;
+          
+          }
+         
+   
+        } else { 
+           var up= await message.client.sendMessage(message.jid,Lang.FB_UP, MessageType.text, { quoted: message.data });
+      await message.client.deleteMessage(message.jid, {id: load.key.id, remoteJid: message.jid, fromMe: true}) ; 
+    var msg = ''
+      if (Config.DETAILS == 'true') msg = '┌───[🐋𝙰𝚀𝚄𝙰𝙱𝙾𝚃🐋]\n\n  *📥FACEBOOK DOWNLODER*\n\n│🎭ᴜᴘʟᴏᴀᴅᴇʀ: ' + res.data.result.author + '\n\n│🎪ᴛɪᴛʟᴇ: ' + res.data.result.title + '\n\n└───────────◉'
+      if (Config.DETAILS == 'false') msg = Config.CAPTION       
+     const viddata = await axios.get(res.data.result.HD_URL, { responseType: 'arraybuffer'}); 
+    await message.sendMessage(Buffer.from(viddata.data), MessageType.video, { caption: msg, quoted: message.data}); 
+    await message.client.deleteMessage(message.jid, {id: up.key.id, remoteJid: message.jid, fromMe: true}) ;
         }
-
-        // Validate Facebook URL
-        if (!url.includes('facebook.com')) {
-            return await sock.sendMessage(chatId, { 
-                text: "That is not a Facebook link."
-            });
-        }
-
-        // Send loading reaction
-        await sock.sendMessage(chatId, {
-            react: { text: '🔄', key: message.key }
-        });
-
-        // Fetch video data from API
-        const response = await axios.get(`https://api.dreaded.site/api/facebook?url=${url}`);
-        const data = response.data;
-
-        if (!data || data.status !== 200 || !data.facebook || !data.facebook.sdVideo) {
-            return await sock.sendMessage(chatId, { 
-                text: "Sorry the API didn't respond correctly. Please try Again later!"
-            });
-        }
-
-        const fbvid = data.facebook.sdVideo;
-
-        if (!fbvid) {
-            return await sock.sendMessage(chatId, { 
-                text: "Wrong Facebook data. Please ensure the video exists."
-            });
-        }
-
-        // Create temp directory if it doesn't exist
-        const tmpDir = path.join(process.cwd(), 'tmp');
-        if (!fs.existsSync(tmpDir)) {
-            fs.mkdirSync(tmpDir, { recursive: true });
-        }
-
-        // Generate temp file path
+       }
+     else { 
+      
+     var up= await message.client.sendMessage(message.jid,Lang.FB_UP, MessageType.text, { quoted: message.data });
+      await message.client.deleteMessage(message.jid, {id: load.key.id, remoteJid: message.jid, fromMe: true}) ; 
+     var msg = ''
+      if (Config.DETAILS == 'true')  msg = '┌───[🐋𝙰𝚀𝚄𝙰𝙱𝙾𝚃🐋]\n\n  *📥FACEBOOK DOWNLODER*\n\n│🎪ᴛɪᴛʟᴇ: ' + response.data.title + '\n\n└───────────◉'
+      if (Config.DETAILS == 'false') msg = Config.CAPTION  
+     const viddata = await axios.get(response.data.result[0].url, { responseType: 'arraybuffer'}); 
+    await message.sendMessage(Buffer.from(viddata.data), MessageType.video, { caption: msg, quoted: message.data}); 
+    await message.client.deleteMessage(message.jid, {id: up.key.id, remoteJid: message.jid, fromMe: true}) ;
+  }
+    })})
         const tempFile = path.join(tmpDir, `fb_${Date.now()}.mp4`);
 
         // Download the video
