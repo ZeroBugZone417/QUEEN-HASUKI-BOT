@@ -82,7 +82,7 @@ cmd(
         { quoted: mek }
       );
 
-      return reply("𝚃𝚑𝚊𝚗𝚔 𝚢𝚘𝚞 𝚏𝚘𝚛 𝚞𝚜𝚒𝚗𝚐 𝚑𝚊𝚜𝚞𝚔𝚒-𝙼𝙳");
+      return reply("🔮⌘❂⋆ 𝚃𝚑𝚊𝚗𝚔 𝚢𝚘𝚞 𝚏𝚘𝚛 𝚞𝚜𝚒𝚗𝚐 Queen 𝚑𝚊𝚜𝚞𝚔𝚒-𝙼𝙳 ⋆❂⌘🔮");
     } catch (e) {
       console.error(e);
       reply(`*Error:* ${e.message || e}`);
