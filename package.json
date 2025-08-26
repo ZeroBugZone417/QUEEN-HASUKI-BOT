@@ -9,7 +9,7 @@
     "restart": "pm2 restart QUEEN-HASUKI"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.16",
+    "@whiskeysockets/baileys": "^6.7.18",
     "api-dylux": "^1.8.5",
     "axios": "^1.11.0",
     "browser-id3-writer": "^6.2.0",
