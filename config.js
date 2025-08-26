@@ -5,7 +5,7 @@ function convertToBool(text, fault = 'true') {
     return text === fault ? true : false;
 }
 module.exports = {
-SESSION_ID: process.env.SESSION_ID || "u9wn1DYZ#3zxufYQsbcyx_DbapnFAnlF8FcRQ61LVTJ8CQApqqak",
+SESSION_ID: process.env.SESSION_ID || "65wU1DiS#uKA3VekwdNzaf-eaBfqak_wqu6OEUi68h0skRc79u0Q",
 ALIVE_IMG: process.env.ALIVE_IMG || "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/LOGO.png?raw=true",
 BOT_OWNER: '94769983151',  // Replace with the owner's phone number
 
