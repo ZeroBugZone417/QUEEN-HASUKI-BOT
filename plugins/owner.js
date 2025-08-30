@@ -4,41 +4,30 @@ cmd(
   {
     pattern: "owner",
     react: "👑",
-    desc: "Show Bot Owner Info with Image and Contact",
+    desc: "Show Bot Owner Info with Image",
     category: "owner",
     filename: __filename,
   },
   async (bot, mek, m, { from, reply }) => {
     try {
-      // Owner info text
+      // Owner info text with updated role
       const ownerInfo = `
 ╔═•ೋ° ✧ BOT OWNER ✧ °ೋ•═╗
-👤 Name: Dineth Sudarshana
-📱 WhatsApp: +94769983151
-💻 Role: Developer & Maintainer
-🌐 GitHub: https://github.com/ZeroBugZone417
-📸 Instagram: https://instagram.com/DinethSudarshana
+👤 Name       : Dineth Sudarshana
+💻 Role       : Developer & Student
+🌐 GitHub     : https://github.com/ZeroBugZone417
+📸 Instagram : https://instagram.com/DinethSudarshana
+🌎 Country    : Sri Lanka
 ✨ Bot Version: 1.0
+╠═════════════════════╣
+📱 WhatsApp: +94769983151
 ╚═════════════════════╝
 `;
 
-      // Send image + caption
+      // Send image + caption in a single message
       await bot.sendMessage(from, {
-        image: { url: "https://i.imgur.com/yourImage.jpg" }, // Replace with your image URL
+        image: { url: "https://raw.githubusercontent.com/ZeroBugZone417/QUEEN-HASUKI-BOT/main/lib/LOGO.png" },
         caption: ownerInfo,
-      }, { quoted: mek });
-
-      // Send vCard contact separately
-      const vcard = `
-BEGIN:VCARD
-VERSION:3.0
-FN:Dineth Sudarshana
-TEL;waid=94769983151:+94769983151
-END:VCARD
-`;
-
-      await bot.sendMessage(from, {
-        contacts: { displayName: "Dineth Sudarshana", contacts: [{ vcard }] }
       }, { quoted: mek });
 
     } catch (e) {
@@ -47,4 +36,3 @@ END:VCARD
     }
   }
 );
-
