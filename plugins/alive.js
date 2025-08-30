@@ -22,12 +22,12 @@ cmd(
           image: {
             url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/LOGO.png?raw=true",
           },
-          caption: `╔════◇👑 Queen Hasuki ◇════╗
+          caption: `╔══◇👑 Queen Hasuki ◇══╗
 1️⃣ Bot Status: ONLINE ✅
 2️⃣ Ready to receive commands instantly ⚡
 3️⃣ Stay tuned & enjoy seamless chatting 😎
 ━━━━━━━━━━━━━━━━━━━━
-💡 Need help? Contact the owner by pressing the button below
+💡 Need help? Contact the owner
 ╚════════════════════════════╝`,
           footer: "🛡©Zero Bug Zone 🛡",
           buttons: [
