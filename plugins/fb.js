@@ -1,4 +1,4 @@
-const { cmd, commands } = require("../command");
+const { cmd } = require("../command");
 const getFbVideoInfo = require("@xaviabot/fb-downloader");
 
 cmd(
@@ -10,58 +10,35 @@ cmd(
     category: "download",
     filename: __filename,
   },
-  async (
-    hasuki,
-    mek,
-    m,
-    {
-      from,
-      quoted,
-      body,
-      isCmd,
-      command,
-      args,
-      q,
-      isGroup,
-      sender,
-      senderNumber,
-      botNumber2,
-      botNumber,
-      pushname,
-      isMe,
-      isOwner,
-      groupMetadata,
-      groupName,
-      participants,
-      groupAdmins,
-      isBotAdmins,
-      isAdmins,
-      reply,
-    }
-  ) => {
+  async (hasuki, mek, m, { from, quoted, q, reply }) => {
     try {
-      if (!q) return reply("*Please provide a valid Facebook video URL!* ❤️");
+      if (!q) 
+        return reply("❌ *Please provide a valid Facebook video URL!*");
 
       const fbRegex = /(https?:\/\/)?(www\.)?(facebook|fb)\.com\/.+/;
       if (!fbRegex.test(q))
-        return reply("*Invalid Facebook URL! Please check and try again.* ☹️");
+        return reply("⚠️ *Invalid Facebook URL! Please check and try again.*");
 
-      reply("*Downloading your video...* ❤️");
+      reply("⏳ *Downloading your video...*");
 
       const result = await getFbVideoInfo(q);
-      if (!result || (!result.sd && !result.hd)) {
-        return reply("*Failed to download video. Please try again later.* ☹️");
-      }
+      if (!result || (!result.sd && !result.hd))
+        return reply("❌ *Failed to download video. Please try again later.*");
 
       const { title, sd, hd } = result;
       const bestQualityUrl = hd || sd;
       const qualityText = hd ? "HD" : "SD";
 
-      const desc = `꧁༺Hasuki FB Video Downloader༻꧂
-👻 *Title*: ${title || "Unknown"}
-👻 *Quality*: ${qualityText}
+      const desc = `
+╔═══════════════════════╗
+║  ☆FB DOWNLOADER ☆    ║
+╠═══════════════════════╣
+║ 🎬 Title   : ${title || "Unknown"}
+║ 📺 Quality : ${qualityText}
+╚═══════════════════════╝
 `;
 
+      // Send thumbnail first
       await hasuki.sendMessage(
         from,
         {
@@ -73,19 +50,20 @@ cmd(
         { quoted: mek }
       );
 
+      // Then send video
       await hasuki.sendMessage(
         from,
         {
           video: { url: bestQualityUrl },
-          caption: `*📥 Downloaded in ${qualityText} quality*`,
+          caption: `✅ *Downloaded successfully in ${qualityText} quality!*`,
         },
         { quoted: mek }
       );
 
-      return reply("🔮⌘❂⋆ 𝚃𝚑𝚊𝚗𝚔 𝚢𝚘𝚞 𝚏𝚘𝚛 𝚞𝚜𝚒𝚗𝚐 Queen 𝚑𝚊𝚜𝚞𝚔𝚒-𝙼𝙳 ⋆❂⌘🔮");
+      return reply("🌟 *Thank you for using Queen Hasuki-MD!* 🌟");
     } catch (e) {
       console.error(e);
-      reply(`*Error:* ${e.message || e}`);
+      reply(`❗ *Error:* ${e.message || e}`);
     }
   }
 );
