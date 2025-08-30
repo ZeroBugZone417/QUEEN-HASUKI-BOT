@@ -23,7 +23,7 @@ cmd(
 
       // --- Build menu text ---
       let menuText = `
-╔════◇👑 *QUEEN HASUKI BOT MENU* ◇════╗
+╔═══◇👑 *QUEEN HASUKI MENU* ◇═══╗
 
 📋 *Available Categories & Commands*
 ━━━━━━━━━━━━━━━━━━━━━━━
@@ -39,14 +39,14 @@ cmd(
       }
 
       menuText += `
-━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━
 💡 Type *.command* to use any feature.
 
 👤 *Owner Contact*  
 📱 WhatsApp: wa.me/94769983151  
 
 🛡 Powered by: Zero Bug Zone
-╚════════════════════════════╝
+╚══════════════════════════╝
 `;
 
       await danuwa.sendMessage(from, { text: menuText }, { quoted: mek });
@@ -57,5 +57,6 @@ cmd(
     }
   }
 );
+
 
 
