@@ -23,19 +23,28 @@ cmd(
 
       // --- Send category selection buttons ---
       const catButtons = Object.keys(categories).map(c => ({
-        buttonId: menu_${c},
+        buttonId: `menu_${c}`,
         buttonText: { displayText: c.toUpperCase() },
         type: 1
       }));
-      // Add Owner button
-      catButtons.push({ buttonId: "owner_button", buttonText: { displayText: "👤 Owner" }, type: 1 });
 
-      await danuwa.sendMessage(from, {
-        text: "╔════◇📋 QUEEN HASUKI MENU ◇════╗\n💡 Choose a category below:",
-        footer: "🛡©Zero Bug Zone 🛡",
-        buttons: catButtons,
-        headerType: 1
-      }, { quoted: mek });
+      // Add Owner button
+      catButtons.push({ 
+        buttonId: "owner_button", 
+        buttonText: { displayText: "👤 Owner" }, 
+        type: 1 
+      });
+
+      await danuwa.sendMessage(
+        from,
+        {
+          text: "╔════◇📋 QUEEN HASUKI MENU ◇════╗\n💡 Choose a category below:",
+          footer: "🛡©Zero Bug Zone 🛡",
+          buttons: catButtons,
+          headerType: 1
+        },
+        { quoted: mek }
+      );
 
       // --- Handle button clicks ---
       danuwa.ev.on("messages.upsert", async ({ messages }) => {
@@ -44,9 +53,13 @@ cmd(
 
         // Owner button
         if (selected === "owner_button") {
-          await danuwa.sendMessage(from, {
-            text: 👤 Owner Contact Details:\n📱 WhatsApp: wa.me/947XXXXXXXX\n✉ Email: owner@example.com
-          }, { quoted: msg });
+          await danuwa.sendMessage(
+            from,
+            {
+              text: `👤 Owner Contact Details:\n📱 WhatsApp: wa.me/947XXXXXXXX\n✉ Email: owner@example.com`
+            },
+            { quoted: msg }
+          );
           return;
         }
 
@@ -56,22 +69,25 @@ cmd(
           const cmds = categories[catName] || [];
           if (!cmds.length) return;
 
-          let menuText = ╔════◇📂 *${catName.toUpperCase()} COMMANDS* ◇════╗\n;
+          let menuText = `╔════◇📂 *${catName.toUpperCase()} COMMANDS* ◇════╗\n`;
           let counter = 1;
           cmds.forEach(c => {
-            menuText += ${counter}⃣ .${c.pattern} : ${c.desc}\n;
+            menuText += `${counter}⃣ .${c.pattern} : ${c.desc}\n`;
             counter++;
           });
           menuText += "━━━━━━━━━━━━━━━━━━━━\n";
           menuText += "╚════════════════════════════╝";
 
-          await danuwa.sendMessage(from, {
-            text: menuText,
-            footer: "🛡©Zero Bug Zone 🛡"
-          }, { quoted: msg });
+          await danuwa.sendMessage(
+            from,
+            {
+              text: menuText,
+              footer: "🛡©Zero Bug Zone 🛡"
+            },
+            { quoted: msg }
+          );
         }
       });
-
     } catch (err) {
       console.error(err);
       reply("❌ Error generating menu.");
