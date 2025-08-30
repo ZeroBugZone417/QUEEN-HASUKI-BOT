@@ -30,12 +30,12 @@ cmd(
       const qualityText = hd ? "HD" : "SD";
 
       const desc = `
-╔═══════════════════════╗
-║  ☆FB DOWNLOADER ☆    ║
-╠═══════════════════════╣
+╔═══════════════════╗
+║  ☆FB DOWNLOADER ☆║
+╠═══════════════════╣
 ║ 🎬 Title   : ${title || "Unknown"}
 ║ 📺 Quality : ${qualityText}
-╚═══════════════════════╝
+╚═══════════════════╝
 `;
 
       // Send thumbnail first
@@ -60,7 +60,7 @@ cmd(
         { quoted: mek }
       );
 
-      return reply("🌟 *Thank you for using Queen Hasuki-MD!* 🌟");
+      return reply("🌟 *Thank you for using Queen Hasuki !* 🌟");
     } catch (e) {
       console.error(e);
       reply(`❗ *Error:* ${e.message || e}`);
