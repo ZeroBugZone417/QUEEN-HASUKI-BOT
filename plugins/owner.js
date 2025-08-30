@@ -8,7 +8,7 @@ cmd(
     category: "owner",
     filename: __filename,
   },
-  async (hasuki, mek, m, { from, reply }) => {
+  async (bot, mek, m, { from, reply }) => {
     try {
       // Owner info text
       const ownerInfo = `
@@ -23,8 +23,8 @@ cmd(
 `;
 
       // Send image + caption
-      await hasuki.sendMessage(from, {
-        image: { url: "https://i.imgur.com/yourImage.jpg" }, // replace with your image URL
+      await bot.sendMessage(from, {
+        image: { url: "https://i.imgur.com/yourImage.jpg" }, // Replace with your image URL
         caption: ownerInfo,
       }, { quoted: mek });
 
@@ -37,13 +37,14 @@ TEL;waid=94769983151:+94769983151
 END:VCARD
 `;
 
-      await hasuki.sendMessage(from, {
+      await bot.sendMessage(from, {
         contacts: { displayName: "Dineth Sudarshana", contacts: [{ vcard }] }
       }, { quoted: mek });
 
     } catch (e) {
-      console.log(e);
+      console.error(e);
       reply(`❌ Error: ${e.message || e}`);
     }
   }
 );
+
