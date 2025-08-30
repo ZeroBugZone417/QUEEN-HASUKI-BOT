@@ -98,7 +98,7 @@ cmd(
         { quoted: mek }
       );
 
-      reply("*Thanks for using my MP3 bot!* 🎵");
+      reply("*Thanks for using my Queen Hasuki bot!* 🎵");
     } catch (e) {
       console.error("Error:", e);
       reply(`❌ Error: ${e.message}`);
