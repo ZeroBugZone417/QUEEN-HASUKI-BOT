@@ -26,7 +26,7 @@ cmd(
 
       // Send image + caption in a single message
       await bot.sendMessage(from, {
-        image: { url: "https://raw.githubusercontent.com/ZeroBugZone417/QUEEN-HASUKI-BOT/main/lib/LOGO.png" },
+        image: { url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/LOGO.png?raw=true" },
         caption: ownerInfo,
       }, { quoted: mek });
 
