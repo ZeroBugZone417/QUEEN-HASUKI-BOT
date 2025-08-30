@@ -3,23 +3,14 @@ const { cmd, commands } = require("../command");
 cmd(
   {
     pattern: "menu",
-    desc: "Displays all available commands",
+    desc: "Displays command categories",
     category: "main",
     filename: __filename,
   },
-  async (
-    danuwa,
-    mek,
-    m,
-    {
-      from,
-      reply
-    }
-  ) => {
+  async (danuwa, mek, m, { from, reply }) => {
     try {
+      // --- Define categories ---
       const categories = {};
-
-      // Group commands by categories
       for (let cmdName in commands) {
         const cmdData = commands[cmdName];
         const cat = cmdData.category?.toLowerCase() || "other";
@@ -30,29 +21,60 @@ cmd(
         });
       }
 
-      let menuText = "📋 *✦════•❁ QUEEN HASUKI V1 ❁•════✦:*\n\n";
+      // --- Send category selection buttons ---
+      const catButtons = Object.keys(categories).map(c => ({
+        buttonId: menu_${c},
+        buttonText: { displayText: c.toUpperCase() },
+        type: 1
+      }));
+      // Add Owner button
+      catButtons.push({ buttonId: "owner_button", buttonText: { displayText: "👤 Owner" }, type: 1 });
 
-      // Loop through categories and list commands
-      for (const [cat, cmds] of Object.entries(categories)) {
-        menuText += `🔹 *${cat.toUpperCase()}*\n`;
-        cmds.forEach(c => {
-          menuText += `⚙️ *${c.pattern}* ➤ ${c.desc}\n`;
-        });
-        menuText += "\n" + "✂️".repeat(25) + "\n";
-      }
+      await danuwa.sendMessage(from, {
+        text: "╔════◇📋 QUEEN HASUKI MENU ◇════╗\n💡 Choose a category below:",
+        footer: "🛡©Zero Bug Zone 🛡",
+        buttons: catButtons,
+        headerType: 1
+      }, { quoted: mek });
 
-      // Add footer with clickable links
-      menuText += `✨ *Enjoy using QUEEN HASUKI!*\n` +
-                  `💬 *For help, type .help* \n` +
-                  `🌐 *Join our official WhatsApp Channel:* [Click here](https://whatsapp.com/channel/0029VbA6MSYJUM2TVOzCSb2A)\n` +
-                  `🔗 *Source Code:* [GitHub](https://github.com/XdKing2/QUEEN-HASUKI)\n`;
+      // --- Handle button clicks ---
+      danuwa.ev.on("messages.upsert", async ({ messages }) => {
+        const msg = messages[0];
+        const selected = msg.message?.buttonsResponseMessage?.selectedButtonId;
 
-      // Send the formatted menu text
-      await reply(menuText.trim());
+        // Owner button
+        if (selected === "owner_button") {
+          await danuwa.sendMessage(from, {
+            text: 👤 Owner Contact Details:\n📱 WhatsApp: wa.me/947XXXXXXXX\n✉ Email: owner@example.com
+          }, { quoted: msg });
+          return;
+        }
+
+        // Category button clicked
+        if (selected?.startsWith("menu_")) {
+          const catName = selected.replace("menu_", "");
+          const cmds = categories[catName] || [];
+          if (!cmds.length) return;
+
+          let menuText = ╔════◇📂 *${catName.toUpperCase()} COMMANDS* ◇════╗\n;
+          let counter = 1;
+          cmds.forEach(c => {
+            menuText += ${counter}⃣ .${c.pattern} : ${c.desc}\n;
+            counter++;
+          });
+          menuText += "━━━━━━━━━━━━━━━━━━━━\n";
+          menuText += "╚════════════════════════════╝";
+
+          await danuwa.sendMessage(from, {
+            text: menuText,
+            footer: "🛡©Zero Bug Zone 🛡"
+          }, { quoted: msg });
+        }
+      });
+
     } catch (err) {
       console.error(err);
       reply("❌ Error generating menu.");
     }
   }
 );
-
