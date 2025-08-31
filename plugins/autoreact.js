@@ -17,7 +17,7 @@ const keywordReacts = {
 };
 
 // Auto React Messages
-sock.ev.on("messages.upsert", async ({ messages }) => {
+bot.ev.on("messages.upsert", async ({ messages }) => {
   try {
     const msg = messages[0];
     if (!msg.message || !autoReact) return;
@@ -28,10 +28,12 @@ sock.ev.on("messages.upsert", async ({ messages }) => {
       msg.message.extendedTextMessage?.text ||
       "";
 
+    if (!text) return;
+
     // ✅ Check keyword based react
     for (const key in keywordReacts) {
       if (text.toLowerCase().includes(key)) {
-        await sock.sendMessage(from, {
+        await bot.sendMessage(from, {
           react: { text: keywordReacts[key], key: msg.key },
         });
         return; // stop here if keyword react matched
@@ -42,7 +44,7 @@ sock.ev.on("messages.upsert", async ({ messages }) => {
     const randomReact =
       reactions[Math.floor(Math.random() * reactions.length)];
 
-    await sock.sendMessage(from, {
+    await bot.sendMessage(from, {
       react: { text: randomReact, key: msg.key },
     });
   } catch (e) {
@@ -51,24 +53,29 @@ sock.ev.on("messages.upsert", async ({ messages }) => {
 });
 
 // =======================
-// Auto React Commands
+// Auto React Command
 // =======================
+
+const { cmd } = require("../command");
 
 cmd(
   {
     pattern: "autoreact",
     desc: "Enable or Disable Auto Reaction",
     category: "fun",
+    filename: __filename,
   },
-  async (message, match) => {
-    if (match.toLowerCase() === "on") {
+  async (bot, mek, m, { args, reply }) => {
+    const choice = (args[0] || "").toLowerCase();
+
+    if (choice === "on") {
       autoReact = true;
-      return await message.reply("✅ Auto React is now *ON*");
-    } else if (match.toLowerCase() === "off") {
+      return reply("✅ Auto React is now *ON*");
+    } else if (choice === "off") {
       autoReact = false;
-      return await message.reply("❌ Auto React is now *OFF*");
+      return reply("❌ Auto React is now *OFF*");
     } else {
-      return await message.reply(
+      return reply(
         `⚙️ Usage: .autoreact on | off\n\n📌 Status: ${
           autoReact ? "ON ✅" : "OFF ❌"
         }`
