@@ -1,5 +1,5 @@
 const { cmd } = require("../command");
-const gTTS = require("gtts"); // install with: npm i gtts
+const gTTS = require("gtts"); // npm install gtts
 const fs = require("fs");
 
 cmd(
@@ -12,28 +12,39 @@ cmd(
   },
   async (bot, mek, m, { args, reply }) => {
     try {
-      if (!args[0]) return reply("❌ Example: .say si හෙලෝ");
-      
-      let lang = args[0]; // language code (en, si, ta, hi...)
+      if (args.length < 2)
+        return reply("❌ Example: .say si හෙලෝ\nLanguages: en, si, ta, hi...");
+
+      let lang = args[0]; // ex: si / en
       let text = args.slice(1).join(" ");
       if (!text) return reply("❌ Please enter some text.");
 
-      const gtts = new gTTS(text, lang);
-      const filePath = "./tts.mp3";
+      let filePath = "./tts.mp3";
+      let tts = new gTTS(text, lang);
 
-      gtts.save(filePath, async function (err) {
+      // Save file properly
+      tts.save(filePath, async (err) => {
         if (err) {
-          reply("❌ Error generating audio!");
-        } else {
+          console.error("TTS Error:", err);
+          return reply("⚠️ Failed to generate TTS audio.");
+        }
+
+        try {
           await bot.sendMessage(
             m.chat,
             { audio: { url: filePath }, mimetype: "audio/mp4", ptt: true },
             { quoted: mek }
           );
-          fs.unlinkSync(filePath); // delete temp file
+        } catch (sendErr) {
+          console.error("Send Error:", sendErr);
+          reply("⚠️ Error sending audio file.");
         }
+
+        // Delete temp file
+        fs.unlinkSync(filePath);
       });
     } catch (e) {
+      console.error("Main Error:", e);
       reply("⚠️ Error in TTS command!");
     }
   }
