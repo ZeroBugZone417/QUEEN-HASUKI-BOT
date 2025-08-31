@@ -1,76 +1,63 @@
-const { decode } = require('html-entities');
+const { cmd } = require("../command");
+const { decode } = require("html-entities");
+const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
-exports.run = {
-    usage: ['mediafire'],
-    hidden: ['mf'],
-    use: 'link',
-    category: 'downloader',
-    async: async (m, { client, args, isPrefix, command, users, env, Func, Api }) => {
-        try {
-            // --- Validate input ---
-            if (!args || !args[0]) {
-                return client.reply(
-                    m.chat,
-                    Func.example(
-                        isPrefix,
-                        command,
-                        'https://www.mediafire.com/file/1fqjqg7e8e2v3ao/YOWA.v8.87_By.SamMods.apk/file'
-                    ),
-                    m
-                );
-            }
+cmd(
+  {
+    pattern: "mediafire",
+    alias: ["mf"],
+    react: "🕒",
+    desc: "Download MediaFire File",
+    category: "downloader",
+    filename: __filename,
+  },
+  async (hasuki, mek, m, { from, q, reply }) => {
+    try {
+      if (!q) return reply("❌ *Please provide a valid MediaFire link!*");
 
-            if (!args[0].match(/https:\/\/www\.mediafire\.com\//i)) {
-                return client.reply(m.chat, global.status.invalid, m);
-            }
+      const mfRegex = /(https?:\/\/)?(www\.)?mediafire\.com\/.+/;
+      if (!mfRegex.test(q)) return reply("⚠️ *Invalid MediaFire URL!*");
 
-            // --- React while processing ---
-            client.sendReact(m.chat, '🕒', m.key);
+      reply("⏳ *Fetching MediaFire file...*");
 
-            // --- Fetch MediaFire info ---
-            const json = await Api.neoxr('/mediafire', { url: args[0] });
-            if (!json.status) {
-                return client.reply(m.chat, Func.jsonFormat(json), m);
-            }
+      // Call MediaFire API
+      const api = `https://api.neoxr.my.id/downloader/mediafire?url=${encodeURIComponent(q)}`;
+      const res = await fetch(api);
+      const json = await res.json();
 
-            // --- Prepare message ---
-            const title = decode(unescape(json.data.title));
-            const size = json.data.size;
-            const extension = json.data.extension;
-            const mime = json.data.mime;
+      if (!json?.status) return reply("❌ *Failed to fetch MediaFire file.*");
 
-            let text = `乂  *M E D I A F I R E*\n\n`;
-            text += `◦  *Name* : ${title}\n`;
-            text += `◦  *Size* : ${size}\n`;
-            text += `◦  *Extension* : ${extension}\n`;
-            text += `◦  *Mime* : ${mime}\n\n`;
-            text += 'Zero Bug Zone'; // Footer
+      const { title, size, extension, mime, url, package: packageName } = json.data;
 
-            // --- Check file size ---
-            const chSize = Func.sizeLimit(size, users.premium ? env.max_upload : env.max_upload_free);
-            if (chSize.oversize) {
-                const isOver = users.premium
-                    ? `💀 File size (${size}) exceeds the maximum limit.`
-                    : `⚠️ File size (${size}) exceeds free download limit of ${env.max_upload_free} MB.`;
-                return client.reply(m.chat, isOver, m);
-            }
+      const caption = `╔══✦•❀•✦══╗
+   📁 *MEDIAFIRE DOWNLOADER*
+╚══✦•❀•✦══╝
 
-            // --- Send file info ---
-            await client.sendMessageModify(m.chat, text, m, {
-                largeThumb: true,
-                thumbnail: 'https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true'
-            });
+📌 *Name:* ${decode(unescape(title))}
+📦 *Package:* ${packageName || "N/A"}
+💾 *Size:* ${size}
+📝 *Extension:* ${extension}
+🎯 *Mime:* ${mime}
 
-            // --- Send MediaFire file ---
-            await client.sendFile(m.chat, json.data.url, title, '', m);
+✨ Powered by Zero Bug Zone ✨`;
 
-        } catch (e) {
-            console.error(e);
-            client.reply(m.chat, Func.jsonFormat(e), m);
-        }
-    },
-    error: false,
-    limit: true,
-    cache: true,
-    location: __filename
+      // Send file with thumbnail
+      await hasuki.sendMessage(
+        from,
+        {
+          document: { url },
+          mimetype: mime,
+          fileName: decode(unescape(title)),
+          jpegThumbnail: { url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true" },
+          caption,
+        },
+        { quoted: mek }
+      );
+    } catch (e) {
+      console.error(e);
+      reply(`❗ *Error:* ${e.message || e}`);
+    }
+  }
+);
+
 };
