@@ -58,7 +58,7 @@ cmd(
 
       await malvin.sendMessage(
         from,
-        { image: { url: info.thumbnail || "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/LOGO.png?raw=true" }, caption: desc },
+        { image: { url: info.thumbnail || "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true" }, caption: desc },
         { quoted: mek }
       );
 
