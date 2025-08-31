@@ -39,6 +39,7 @@
     "html-entities": "^2.6.0",
     "@vreden/youtube_scraper": "^1.2.7",
     "@vitalets/google-translate-api": "^9.2.1",
+    "gtts": "^2.0.0",
     "@xaviabot/fb-downloader": "^1.0.14",
     "node-fetch": "^3.3.2"
   }
