@@ -28,7 +28,7 @@ cmd(
 3️⃣ Stay tuned & enjoy seamless chatting 😎
 ━━━━━━━━━━━━━━━━━━━━
 💡 Need help? Contact the owner
-╚════════════════════════════╝`,
+╚══════════════════╝`,
           footer: "🛡©Zero Bug Zone 🛡",
           buttons: [
             { 
