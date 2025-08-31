@@ -13,20 +13,19 @@ cmd(
       // Owner info text with updated role
       const ownerInfo = `
 ╔═•ೋ° ✧ BOT OWNER ✧ °ೋ•═╗
-👤 Name       : Dineth Sudarshana
-💻 Role       : Developer & Student
-🌐 GitHub     : https://github.com/ZeroBugZone417
-📸 Instagram : https://instagram.com/DinethSudarshana
-🌎 Country    : Sri Lanka
+👤 Name    : Dineth Sudarshana
+💻 Role    : Developer & Student
+🌐 GitHub  : https://github.com/ZeroBugZone417
+🌎 Country  : Sri Lanka
 ✨ Bot Version: 1.0
 ╠═════════════════════╣
-📱 WhatsApp: +94769983151
+📱 WhatsApp:+94769983151
 ╚═════════════════════╝
 `;
 
       // Send image + caption in a single message
       await bot.sendMessage(from, {
-        image: { url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/LOGO.png?raw=true" },
+        image: { url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/Zero%20Bug%20Zone%20(1).png?raw=true" },
         caption: ownerInfo,
       }, { quoted: mek });
 
