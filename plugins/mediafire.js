@@ -1,79 +1,69 @@
 const { cmd } = require("../command");
-const { decode } = require("html-entities");
 const puppeteer = require("puppeteer");
 
 cmd(
   {
     pattern: "mediafire",
-    alias: ["mf"],
-    react: "🕒",
-    desc: "Download MediaFire File",
+    alias: ["mf", "mfdl"],
+    react: "📂",
+    desc: "Download Mediafire File",
     category: "download",
     filename: __filename,
   },
-  async (hasuki, mek, m, { from, q, reply, users, env }) => {
+  async (bot, mek, m, { from, q, reply }) => {
     try {
-      if (!q) return reply("❌ *Please provide a valid MediaFire link!*");
+      if (!q) return reply("❌ *Please provide a valid Mediafire link!*");
 
-      const mfRegex = /(https?:\/\/)?(www\.)?mediafire\.com\/.+/;
-      if (!mfRegex.test(q)) return reply("⚠️ *Invalid MediaFire URL!*");
+      const isValid = /https?:\/\/(www\.)?mediafire\.com\/.+/i.test(q);
+      if (!isValid) return reply("⚠️ *Invalid Mediafire URL!*");
 
-      reply("⏳ *Fetching MediaFire file…*");
+      reply("⏳ *Fetching Mediafire file details...*");
 
-      const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
-      const page = await browser.newPage();
-      await page.goto(q, { waitUntil: "networkidle2" });
+      const data = await mediafireDl(q);
+      if (!data?.url) return reply("❌ *Failed to fetch download link.*");
 
-      // Get download link
-      const downloadUrl = await page.$eval(
-        'a#downloadButton',
-        (el) => el.href
-      );
-      const title = await page.$eval('div.filename > div > span', (el) => el.textContent.trim());
-      const sizeText = await page.$eval('div.filename > div > span.size', (el) => el.textContent.trim());
-      await browser.close();
-
-      if (!downloadUrl) return reply("❌ *Failed to get MediaFire download link!*");
-
-      // Convert size text to MB number for comparison
-      let sizeMB = 0;
-      if (sizeText.toLowerCase().includes("kb")) {
-        sizeMB = parseFloat(sizeText) / 1024;
-      } else if (sizeText.toLowerCase().includes("mb")) {
-        sizeMB = parseFloat(sizeText);
-      } else if (sizeText.toLowerCase().includes("gb")) {
-        sizeMB = parseFloat(sizeText) * 1024;
-      }
-
-      const maxSize = users.premium ? env.max_upload : env.max_upload_free;
-      if (sizeMB > maxSize) {
-        return reply(`⚠️ File size (${sizeText}) exceeds the maximum limit of ${maxSize} MB for your account type.`);
-      }
-
-      // Caption
-      const caption = `╔══✦•❀•✦══╗
-   📁 *MEDIAFIRE DOWNLOADER*
-╚══✦•❀•✦══╝
-
-📌 *Name:* ${decode(title)}
-💾 *Size:* ${sizeText}
-✨ Powered by Zero Bug Zone ✨`;
-
-      // Send file
-      await hasuki.sendMessage(
+      await bot.sendMessage(
         from,
         {
-          document: { url: downloadUrl },
-          fileName: decode(title),
-          caption,
-          jpegThumbnail: { url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true" },
+          document: { url: data.url },
+          mimetype: "application/octet-stream",
+          fileName: data.filename,
+          caption: `╔══✦•❀•✦══╗
+📂 *MEDIAFIRE DOWNLOADER*
+╚══✦•❀•✦══╝
+
+📝 *File:* ${data.filename}
+📦 *Size:* ${data.filesize}
+✅ *Direct Download Ready*
+
+✨ Powered by Zero Bug Zone ✨`,
         },
         { quoted: mek }
       );
-
     } catch (e) {
-      console.error(e);
+      console.error("Mediafire Error:", e);
       reply(`❗ *Error:* ${e.message || e}`);
     }
   }
 );
+
+async function mediafireDl(url) {
+  const browser = await puppeteer.launch({ headless: true, args: ["--no-sandbox"] });
+  const page = await browser.newPage();
+
+  await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+
+  // Wait for download button
+  await page.waitForTimeout(5000); // give time for ads/cloudflare
+  await page.waitForSelector("a#downloadButton", { timeout: 20000 });
+
+  // Extract details
+  const dlUrl = await page.$eval("a#downloadButton", el => el.href);
+  const filename = await page.$eval(".filename", el => el.innerText).catch(() => "Unknown File");
+  const filesize = await page.$eval(".dl-info .info", el => el.innerText).catch(() => "Unknown Size");
+
+  await browser.close();
+
+  return { url: dlUrl, filename, filesize };
+}
+
