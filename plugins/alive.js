@@ -20,7 +20,7 @@ cmd(
         from,
         {
           image: {
-            url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/LOGO.png?raw=true",
+            url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true",
           },
           caption: `╔══◇👑 Queen Hasuki ◇══╗
 1️⃣ Bot Status: ONLINE ✅
