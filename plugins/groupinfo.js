@@ -24,9 +24,9 @@ cmd(
       const admins = metadata.participants.filter(p => p.admin).map(p => "@" + p.id.split("@")[0]);
       const adminList = admins.length ? admins.join(", ") : "No admins";
 
-      const text = `╔══✦•❀•✦══╗
+      const text = `╔════✦•❀•✦════╗
 📊 *GROUP INFORMATION*
-╚══✦•❀•✦══╝
+╚════✦•❀•✦════╝
 
 🏷️ *Name:* ${groupName}
 🆔 *ID:* ${groupId}
@@ -37,7 +37,7 @@ cmd(
 💬 *Description:*
 ${groupDesc}
 
-✨ Powered by Zero Bug Zone ✨`;
+✨ *Powered by Zero Bug Zone* ✨`;
 
       await bot.sendMessage(from, { text, mentions: [groupOwner, ...metadata.participants.map(p => p.id)] }, { quoted: mek });
     } catch (e) {
