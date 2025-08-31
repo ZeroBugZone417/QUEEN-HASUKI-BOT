@@ -5,7 +5,7 @@ cmd(
     pattern: "owner",
     react: "👑",
     desc: "Show Bot Owner Info with Image",
-    category: "owner",
+    category: "main",
     filename: __filename,
   },
   async (bot, mek, m, { from, reply }) => {
