@@ -48,13 +48,18 @@ cmd(
 );
 
 async function mediafireDl(url) {
-  const browser = await puppeteer.launch({ headless: true, args: ["--no-sandbox"] });
-  const page = await browser.newPage();
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
 
+  const page = await browser.newPage();
   await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
 
+  // Instead of page.waitForTimeout
+  await new Promise(resolve => setTimeout(resolve, 5000));
+
   // Wait for download button
-  await page.waitForTimeout(5000); // give time for ads/cloudflare
   await page.waitForSelector("a#downloadButton", { timeout: 20000 });
 
   // Extract details
