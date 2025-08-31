@@ -8,7 +8,7 @@ cmd(
     alias: ["mf"],
     react: "🕒",
     desc: "Download MediaFire File",
-    category: "download",
+    category: "download", // Appears under Download menu
     filename: __filename,
   },
   async (hasuki, mek, m, { from, q, reply }) => {
@@ -23,31 +23,48 @@ cmd(
       // Call MediaFire API
       const api = `https://api.neoxr.my.id/downloader/mediafire?url=${encodeURIComponent(q)}`;
       const res = await fetch(api);
+
+      // --- Check if response is JSON ---
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        const text = await res.text();
+        return reply(`❌ API did not return JSON:\n${text}`);
+      }
+
       const json = await res.json();
+      if (!json?.status || !json?.data) return reply("❌ *Failed to fetch MediaFire file.*");
 
-      if (!json?.status) return reply("❌ *Failed to fetch MediaFire file.*");
+      // --- Safe destructuring ---
+      const data = json.data;
+      const title = decode(unescape(data.title || "Unknown"));
+      const size = data.size || "Unknown";
+      const extension = data.extension || "Unknown";
+      const mime = data.mime || "application/octet-stream";
+      const url = data.url;
+      const packageName = data.package || "N/A";
 
-      const { title, size, extension, mime, url, package: packageName } = json.data;
+      if (!url) return reply("❌ *MediaFire file URL not found!*");
 
+      // --- Caption ---
       const caption = `╔══✦•❀•✦══╗
    📁 *MEDIAFIRE DOWNLOADER*
 ╚══✦•❀•✦══╝
 
-📌 *Name:* ${decode(unescape(title))}
-📦 *Package:* ${packageName || "N/A"}
+📌 *Name:* ${title}
+📦 *Package:* ${packageName}
 💾 *Size:* ${size}
 📝 *Extension:* ${extension}
 🎯 *Mime:* ${mime}
 
 ✨ Powered by Zero Bug Zone ✨`;
 
-      // Send file with thumbnail
+      // --- Send file with thumbnail ---
       await hasuki.sendMessage(
         from,
         {
           document: { url },
           mimetype: mime,
-          fileName: decode(unescape(title)),
+          fileName: title,
           jpegThumbnail: { url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true" },
           caption,
         },
@@ -59,4 +76,3 @@ cmd(
     }
   }
 );
-
