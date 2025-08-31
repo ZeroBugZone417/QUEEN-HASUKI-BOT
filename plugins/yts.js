@@ -45,7 +45,7 @@ cmd(
 
       // 4) Send metadata + thumbnail
       const desc = `
-🧩 *QUEEN HASUKI AUDIO DOWNLOADER* 🧩
+🧩 *HASUKI AUDIO DOWNLOADER* 🧩
 
 📌 *Title:* ${info.title || "Unknown"}
 ⏱️ *Uploaded:* ${info.timestamp || "N/A"} (${info.ago || "N/A"})
@@ -98,7 +98,7 @@ cmd(
         { quoted: mek }
       );
 
-      reply("*Thanks for using my Queen Hasuki bot!* 🎵");
+      reply("*Thanks for using Queen Hasuki bot!* 🎵");
     } catch (e) {
       console.error("Error:", e);
       reply(`❌ Error: ${e.message}`);
