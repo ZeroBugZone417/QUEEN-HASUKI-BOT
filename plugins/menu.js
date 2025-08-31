@@ -23,7 +23,7 @@ cmd(
 
       // --- Build menu text ---
       let menuText = `
-╔═◇👑 *QUEEN HASUKI MENU* ◇═╗
+╔═◇*QUEEN HASUKI MENU*◇═╗
 
 📋 *Available Commands*
 ━━━━━━━━━━━━━━━━━━━
@@ -43,7 +43,7 @@ cmd(
 👤 *Owner Contact*  
 📱 WhatsApp: wa.me/94769983151  
 
-🛡 Powered by: Zero Bug Zone
+🛡 *Zero Bug Zone*
 ╚═════════════════╝
 `;
 
@@ -55,6 +55,7 @@ cmd(
     }
   }
 );
+
 
 
 
