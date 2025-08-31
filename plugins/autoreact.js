@@ -1,7 +1,8 @@
+const { cmd } = require("../command");
+
 // =======================
 // Auto React System
 // =======================
-
 let autoReact = true; // default ON
 
 // Reaction list (Random mode)
@@ -16,48 +17,42 @@ const keywordReacts = {
   wow: "🤩",
 };
 
-// Auto React Messages
-bot.ev.on("messages.upsert", async ({ messages }) => {
-  try {
-    const msg = messages[0];
-    if (!msg.message || !autoReact) return;
+// =======================
+// Attach Auto React to every incoming message
+// =======================
+cmd(
+  {
+    pattern: "autoreact-handler",
+    dontAddCommandList: true, // hidden command
+  },
+  async (bot, mek, m, { body, from }) => {
+    try {
+      if (!autoReact || !body) return;
 
-    const from = msg.key.remoteJid;
-    const text =
-      msg.message.conversation ||
-      msg.message.extendedTextMessage?.text ||
-      "";
-
-    if (!text) return;
-
-    // ✅ Check keyword based react
-    for (const key in keywordReacts) {
-      if (text.toLowerCase().includes(key)) {
-        await bot.sendMessage(from, {
-          react: { text: keywordReacts[key], key: msg.key },
-        });
-        return; // stop here if keyword react matched
+      // ✅ Check keyword based react
+      for (const key in keywordReacts) {
+        if (body.toLowerCase().includes(key)) {
+          await bot.sendMessage(from, {
+            react: { text: keywordReacts[key], key: mek.key },
+          });
+          return;
+        }
       }
+
+      // ✅ Otherwise random react
+      const randomReact = reactions[Math.floor(Math.random() * reactions.length)];
+      await bot.sendMessage(from, {
+        react: { text: randomReact, key: mek.key },
+      });
+    } catch (e) {
+      console.log("Auto React Error:", e);
     }
-
-    // ✅ Otherwise, random react
-    const randomReact =
-      reactions[Math.floor(Math.random() * reactions.length)];
-
-    await bot.sendMessage(from, {
-      react: { text: randomReact, key: msg.key },
-    });
-  } catch (e) {
-    console.log("Auto React Error:", e);
   }
-});
+);
 
 // =======================
-// Auto React Command
+// Auto React Toggle Command
 // =======================
-
-const { cmd } = require("../command");
-
 cmd(
   {
     pattern: "autoreact",
