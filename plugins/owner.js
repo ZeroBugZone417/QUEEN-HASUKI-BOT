@@ -29,7 +29,7 @@ cmd(
         from,
         {
           image: {
-            url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/Zero%20Bug%20Zone%20(1).png?raw=true",
+            url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true",
           },
           caption: ownerInfo,
         },
