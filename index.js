@@ -87,9 +87,9 @@ async function connectToWA() {
     } else if (connection === 'open') {
       console.log('✅ QUEEN HASUKI-V1 connected to WhatsApp');
 
-      const up = `QUEEN HASUKI-V1 connected ✅\n\nPREFIX: ${prefix}`;
+      const up = `QUEEN HASUKI-V1 connected ✅\n\nPREFIX: ${prefix}\n\nThanks for using QUEEN-HASUKI BOT';
       await hasuki.sendMessage(ownerNumber[0] + "@s.whatsapp.net", {
-        image: { url: `https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/LOGO.png?raw=true` },
+        image: { url: `https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true` },
         caption: up
       });
 
