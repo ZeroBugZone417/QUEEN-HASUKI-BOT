@@ -34,7 +34,7 @@
     "vm": "^0.1.0",
     "ytdl-core": "^4.11.5",
     "openai": "^4.20.1",
-    "@iamtraction/google-translate" "^2.0.1",
+    "@iamtraction/google-translate": "^2.0.1",
     "@vreden/youtube_scraper": "^1.2.7",
     "@vitalets/google-translate-api": "^9.2.1",
     "@xaviabot/fb-downloader": "^1.0.14",
