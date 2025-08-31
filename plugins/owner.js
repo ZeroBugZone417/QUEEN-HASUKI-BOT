@@ -16,10 +16,10 @@ cmd(
   👑 BOT OWNER 👑
 ╚═══•ೋ•✧✧•ೋ•═══╝
 
-👤 *Name*       : Dineth Sudarshana
-💻 *Role*       : Developer & Student
-🌐 *GitHub*     : https://github.com/ZeroBugZone417
-🌎 *Country*    : Sri Lanka
+👤 *Name* : Dineth Sudarshana
+💻 *Role*  : Developer & Student
+🌐 *GitHub* : https://github.com/ZeroBugZone417
+🌎 *Country*  : Sri Lanka
 ✨ *Bot Version*: 1.0
 📱 *WhatsApp*   : wa.me/94769983151
 `;
