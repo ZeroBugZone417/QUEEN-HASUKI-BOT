@@ -23,7 +23,7 @@ cmd(
 
       // --- Build menu text ---
       let menuText = `
-╔═◇*QUEEN HASUKI MENU*◇═╗
+╔═◇*HASUKI MENU*◇═╗
 
 📋 *Available Commands*
 ━━━━━━━━━━━━━━━━━━━
@@ -55,6 +55,7 @@ cmd(
     }
   }
 );
+
 
 
 
