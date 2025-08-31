@@ -1,5 +1,5 @@
 const { cmd } = require("../command");
-const translate = require("@vitalets/google-translate-api");
+const translate = require("@iamtraction/google-translate"); // ✅ use maintained fork
 
 // 🔹 Translate command
 cmd(
@@ -13,7 +13,9 @@ cmd(
   async (bot, mek, m, { args, reply }) => {
     try {
       if (args.length < 2) {
-        return reply("❌ Usage: .tr [lang_code] [text]\n\nExample: .tr si Hello World");
+        return reply(
+          "❌ Usage: .tr [lang_code] [text]\n\nExample: .tr si Hello World"
+        );
       }
 
       const lang = args[0]; // e.g., 'si' for Sinhala
@@ -23,7 +25,7 @@ cmd(
 
       await reply(`🌐 *Translated (${lang})*\n\n📝 ${res.text}`);
     } catch (e) {
-      console.error(e);
+      console.error("Translation Error:", e);
       reply("❌ Translation failed. Try again!");
     }
   }
