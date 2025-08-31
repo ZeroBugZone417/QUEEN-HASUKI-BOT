@@ -33,6 +33,7 @@
     "util": "^0.12.4",
     "vm": "^0.1.0",
     "ytdl-core": "^4.11.5",
+    "puppeteer": "^24.17.1",
     "openai": "^4.20.1",
     "@iamtraction/google-translate": "^2.0.1",
     "html-entities": "^2.6.0",
