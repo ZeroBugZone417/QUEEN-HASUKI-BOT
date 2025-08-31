@@ -8,7 +8,7 @@ cmd(
     alias: ["mf"],
     react: "🕒",
     desc: "Download MediaFire File",
-    category: "downloader",
+    category: "download",
     filename: __filename,
   },
   async (hasuki, mek, m, { from, q, reply }) => {
