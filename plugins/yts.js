@@ -45,7 +45,7 @@ cmd(
 
       // 4) Send metadata + thumbnail
       const desc = `
-🧩 *HASUKI AUDIO DOWNLOADER* 🧩
+🧩 *AUDIO DOWNLOADER* 🧩
 
 📌 *Title:* ${info.title || "Unknown"}
 ⏱️ *Uploaded:* ${info.timestamp || "N/A"} (${info.ago || "N/A"})
