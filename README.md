@@ -1,4 +1,3 @@
-
 # 🤖 Queen Hasuki
 
 This is a WhatsApp bot built using the Baileys library for group management, including features like tagging all members, muting/unmuting, and many more. It's designed to help admins efficiently manage WhatsApp groups.
@@ -11,7 +10,7 @@ This is a WhatsApp bot built using the Baileys library for group management, inc
 
 <div align="center"> 
   <a href="#"> 
-    <img src="[lib/QUEEN HASUKI.png]("alt="Queen Hasuki" height="300"> 
+    <img src="./lib/QUEEN HASUKI.png" alt="Queen Hasuki" height="300"> 
   </a> 
 </div>
 
