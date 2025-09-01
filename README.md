@@ -11,7 +11,7 @@ This is a WhatsApp bot built using the Baileys library for group management, inc
 
 <div align="center"> 
   <a href="#"> 
-    <img src="[./assets/bot_image.jpg](https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true)" alt="Queen Hasuki" height="300"> 
+    <img src="[lib/QUEEN HASUKI.png]("alt="Queen Hasuki" height="300"> 
   </a> 
 </div>
 
