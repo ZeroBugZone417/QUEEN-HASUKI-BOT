@@ -35,7 +35,7 @@ Click the button below to fork the Queen Hasuki repository to your GitHub accoun
 Deploy the bot and easily connect it to your WhatsApp account by pair code. Click the button below to deploy the bot on Replit.
 
 <div align="center">
-  <a href="https://a4357a64-9674-4d83-9c96-01d7f3b519c2-00-3jyea8yajowzc.pike.replit.dev/" target="_blank">
+  <a href="https://389cad6e-4562-412d-9e23-4df9e3be9fdc-00-397ic87saf44a.pike.replit.dev/" target="_blank">
     <img src="https://img.shields.io/badge/GET%20PAIR%20CODE-Replit-success?style=for-the-badge" alt="Deploy on Replit"/>
   </a>
 </div>
