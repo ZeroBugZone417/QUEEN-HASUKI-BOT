@@ -4,7 +4,7 @@ cmd(
   {
     pattern: "repo",
     react: "💻",
-    desc: "Show GitHub repository link of the bot (button style)",
+    desc: "Show GitHub repository link of the bot with logo",
     category: "main",
     filename: __filename,
     fromMe: false,
@@ -15,31 +15,13 @@ cmd(
       const repoLink = "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT";
 
       await malvin.sendMessage(from, {
-        text: "💻 *Queen Hasuki Bot GitHub Repository*\n\nClick the button below to open the repo!",
-        buttons: [
-          {
-            buttonId: "open_repo",
-            buttonText: { displayText: "🔗 View Repo" },
-            type: 1
-          }
-        ],
-        headerType: 1
+        image: { url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true" },
+        caption: `💻 *Queen Hasuki Bot GitHub Repository*\n\n${repoLink}\n\n📌 View the source code and contribute!`,
       }, { quoted: mek });
-
-      // Button click handler
-      malvin.ev.on("messages.upsert", async ({ messages }) => {
-        const m = messages[0];
-        const selected = m.message?.buttonsResponseMessage?.selectedButtonId;
-        if (selected === "open_repo") {
-          await malvin.sendMessage(from, {
-            text: `💻 GitHub Repo Link:\n${repoLink}`
-          }, { quoted: m });
-        }
-      });
 
     } catch (e) {
       console.error("❌ Error in .repo command:", e);
-      reply("❌ Couldn't send GitHub repo info!");
+      reply("❌ Couldn't fetch GitHub repo info!");
     }
   }
 );
