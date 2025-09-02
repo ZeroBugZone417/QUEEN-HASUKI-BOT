@@ -13,14 +13,16 @@ cmd(
     try {
       if (!q) 
         return reply(
-          "❌ Usage: .add <phone_number>\nExample: .add 947699xxxxx"
+          "❌ Usage: .add <phone_number>\nExample: .add 94771234567"
         );
 
-      // Load JSON file
+      // Load JSON file safely
       let numbers = [];
       if (fs.existsSync(path)) {
-        const data = fs.readFileSync(path, "utf8");
-        numbers = JSON.parse(data || "[]");
+        const data = fs.readFileSync(path, "utf8").trim();
+        if (data) {
+          numbers = JSON.parse(data);
+        }
       }
 
       // Check if number already added
