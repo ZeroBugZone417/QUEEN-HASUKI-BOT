@@ -1,44 +1,41 @@
 const { cmd } = require("../command");
 const fs = require("fs");
-const path = require("path");
-
-// Path to JSON file
-const dataFile = path.join(__dirname, "../lib/added_numbers.json");
-
-// Ensure data file exists
-if (!fs.existsSync(dataFile)) fs.writeFileSync(dataFile, JSON.stringify([]));
-
-// Helper functions to read/write JSON
-const readData = () => JSON.parse(fs.readFileSync(dataFile));
-const writeData = (data) => fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
+const path = "./lib/added_numbers.json";
 
 cmd(
   {
     pattern: "add",
-    react: "➕",
-    desc: "Add a number to the bot's list",
+    desc: "Add a phone number",
     category: "main",
     filename: __filename,
-    fromMe: false,
   },
-  async (malvin, mek, m, { text, reply }) => {
+  async (hasuki, mek, m, { from, q, reply }) => {
     try {
-      if (!text) return reply("❌ Usage: .add <phone_number>\nExample: .add 94771234567");
+      if (!q) 
+        return reply(
+          "❌ Usage: .add <phone_number>\nExample: .add 947699xxxxx"
+        );
 
-      let number = text.replace(/\D/g, ""); // remove non-numeric chars
-      let data = readData();
-
-      if (data.includes(number)) {
-        return reply(`⚠️ Number already added: ${number}`);
+      // Load JSON file
+      let numbers = [];
+      if (fs.existsSync(path)) {
+        const data = fs.readFileSync(path, "utf8");
+        numbers = JSON.parse(data || "[]");
       }
 
-      data.push(number);
-      writeData(data);
+      // Check if number already added
+      if (numbers.includes(q)) {
+        return reply("⚠️ This number is already added!");
+      }
 
-      await reply(`✅ Number added successfully: ${number}\nTotal numbers: ${data.length}`);
-    } catch (e) {
-      console.error("❌ Error in .add command:", e);
-      reply("❌ Failed to add number!");
+      // Add number
+      numbers.push(q);
+      fs.writeFileSync(path, JSON.stringify(numbers, null, 2));
+
+      return reply(`✅ Number added successfully: ${q}`);
+    } catch (err) {
+      console.error(err);
+      reply("❌ Error adding number.");
     }
   }
 );
