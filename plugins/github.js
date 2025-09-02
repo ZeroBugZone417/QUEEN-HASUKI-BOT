@@ -4,7 +4,7 @@ cmd(
   {
     pattern: "repo",
     react: "💻",
-    desc: "Show GitHub repository link of the bot with logo",
+    desc: "Show GitHub repository link with styled caption",
     category: "main",
     filename: __filename,
     fromMe: false,
@@ -16,7 +16,11 @@ cmd(
 
       await malvin.sendMessage(from, {
         image: { url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true" },
-        caption: `💻 *Queen Hasuki Bot GitHub Repository*\n\n${repoLink}\n\n📌 View the source code and contribute!`,
+        caption: `💻 *Queen Hasuki Bot GitHub Repository*\n
+🔗 Repo: ${repoLink}\n
+📌 View the source code and contribute!\n
+🛡️ Stay safe and enjoy chatting! 😎\n
+⚡ Keep exploring new features and commands!`,
       }, { quoted: mek });
 
     } catch (e) {
