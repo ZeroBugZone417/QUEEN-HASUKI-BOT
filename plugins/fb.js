@@ -6,11 +6,11 @@ cmd(
     pattern: "fb",
     alias: ["facebook"],
     react: "✅",
-    desc: "Download Facebook Video",
+    desc: "Download public Facebook video",
     category: "download",
     filename: __filename,
   },
-  async (hasuki, mek, m, { from, quoted, q, reply }) => {
+  async (hasuki, mek, m, { from, q, reply }) => {
     try {
       if (!q) 
         return reply("❌ *Please provide a valid Facebook video URL!*");
@@ -29,13 +29,12 @@ cmd(
       const bestQualityUrl = hd || sd;
       const qualityText = hd ? "HD" : "SD";
 
+      // Build clean menu text with Queen Hasuki header
       const desc = `
-╔═══════════════════╗
-║  ☆FB DOWNLOADER ☆║
-╠═══════════════════╣
-║ 🎬 Title   : ${title || "Unknown"}
-║ 📺 Quality : ${qualityText}
-╚═══════════════════╝
+👑 *Queen Hasuki* 👑
+🎬 *Title:* ${title || "Unknown"}
+📺 *Quality:* ${qualityText}
+✅ *Video ready to download!*
 `;
 
       // Send thumbnail first
@@ -55,15 +54,16 @@ cmd(
         from,
         {
           video: { url: bestQualityUrl },
-          caption: `✅ *Downloaded successfully in ${qualityText} quality!*`,
+          caption: `🌟 *Downloaded successfully in ${qualityText} quality!*`,
         },
         { quoted: mek }
       );
 
-      return reply("🌟 *Thank you for using Queen Hasuki !* 🌟");
+      return reply("💖 *Thank you for using Queen Hasuki!*");
     } catch (e) {
       console.error(e);
       reply(`❗ *Error:* ${e.message || e}`);
     }
   }
 );
+
