@@ -1,35 +1,44 @@
 const { cmd } = require("../command");
+const fs = require("fs");
+const path = require("path");
+
+// Path to JSON file
+const dataFile = path.join(__dirname, "../lib/added_numbers.json");
+
+// Ensure data file exists
+if (!fs.existsSync(dataFile)) fs.writeFileSync(dataFile, JSON.stringify([]));
+
+// Helper functions to read/write JSON
+const readData = () => JSON.parse(fs.readFileSync(dataFile));
+const writeData = (data) => fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
 
 cmd(
   {
     pattern: "add",
     react: "➕",
-    desc: "Add a member to the group",
-    category: "group",
+    desc: "Add a number to the bot's list",
+    category: "main",
     filename: __filename,
-    fromMe: true, // only bot owner or admin can use
+    fromMe: false,
   },
   async (malvin, mek, m, { text, reply }) => {
     try {
-      const from = mek.key.remoteJid;
+      if (!text) return reply("❌ Usage: .add <phone_number>\nExample: .add 94771234567");
 
-      // Check if text is provided
-      if (!text) {
-        return reply("❌ Usage: .add <number>\nExample: .add 9477xxxxxxx");
+      let number = text.replace(/\D/g, ""); // remove non-numeric chars
+      let data = readData();
+
+      if (data.includes(number)) {
+        return reply(`⚠️ Number already added: ${number}`);
       }
 
-      // Convert number to WhatsApp ID
-      let jid = text.replace(/[^0-9]/g, "") + "@s.whatsapp.net";
+      data.push(number);
+      writeData(data);
 
-      // Add member
-      await malvin.groupParticipantsUpdate(from, [jid], "add");
-
-      await reply(`✅ Successfully added: @${jid.split("@")[0]}`, {
-        mentions: [jid],
-      });
+      await reply(`✅ Number added successfully: ${number}\nTotal numbers: ${data.length}`);
     } catch (e) {
       console.error("❌ Error in .add command:", e);
-      reply("❌ Failed to add member. Make sure the bot is admin in this group.");
+      reply("❌ Failed to add number!");
     }
   }
 );
