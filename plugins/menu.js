@@ -9,7 +9,6 @@ cmd(
   },
   async (danuwa, mek, m, { from, reply }) => {
     try {
-      // --- Define categories ---
       const categories = {};
       for (let cmdName in commands) {
         const cmdData = commands[cmdName];
@@ -17,47 +16,27 @@ cmd(
         if (!categories[cat]) categories[cat] = [];
         categories[cat].push({
           pattern: cmdData.pattern,
-          desc: cmdData.desc || "No description"
+          desc: cmdData.desc || "No description",
         });
       }
 
-      // --- Build menu text ---
-      let menuText = `
-╔═◇*HASUKI MENU*◇═╗
-
-📋 *Available Commands*
-━━━━━━━━━━━━━━━━━━━
-`;
+      let menuText = `*🎉 HASUKI BOT MENU 🎉*\n\n`;
 
       for (let cat in categories) {
-        menuText += `\n📂 *${cat.toUpperCase()}*\n`;
-        let counter = 1;
-        categories[cat].forEach(c => {
-          menuText += `   ${counter}⃣ .${c.pattern} ➜ ${c.desc}\n`;
-          counter++;
+        menuText += `*📂 ${cat.toUpperCase()}*\n`;
+        categories[cat].forEach((c, i) => {
+          menuText += `➤ *${c.pattern}* — _${c.desc}_\n`;
         });
+        menuText += "\n"; // space between categories
       }
 
-      menuText += `
-━━━━━━━━━━━━━━━━━
-👤 *Owner Contact*  
-📱 WhatsApp: wa.me/94769983151  
-
-🛡 *Zero Bug Zone*
-╚═════════════════╝
-`;
+      menuText += `*👤 Owner Contact*\n📱 wa.me/94769983151\n\n`;
+      menuText += `*🛡 Zero Bug Zone*\n`;
 
       await danuwa.sendMessage(from, { text: menuText }, { quoted: mek });
-
     } catch (err) {
       console.error(err);
       reply("❌ Error generating menu.");
     }
   }
 );
-
-
-
-
-
-
