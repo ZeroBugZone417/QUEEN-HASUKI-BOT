@@ -42,7 +42,6 @@ async function ensureSessionFile() {
     const sessdata = config.SESSION_ID;
     const filer = File.fromURL(`https://mega.nz/file/${sessdata}`);
 
-    // Note: megajs download callback returns Buffer `data`
     filer.download((err, data) => {
       if (err) {
         console.error('❌ Failed to download session file from MEGA:', err);
@@ -92,19 +91,19 @@ async function connectToWA() {
       } else if (connection === 'open') {
         console.log('✅ QUEEN HASUKI-V1 connected to WhatsApp');
 
-        const up = `QUEEN HASUKI-V1 connected ✅
-
-PREFIX: ${prefix}`;
+        // --- Owner notification message (modified) ---
         try {
-          await hasuki.sendMessage(ownerNumber[0] + '@s.whatsapp.net', {
-            image: {
-              url: 'https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/Zero%20Bug%20Zone.png?raw=true'
-            },
-            caption: up
-          });
+          const msg = `🟢 QUEEN HASUKI-V1 connected ✅
+Owner: +${ownerNumber[0]}
+Prefix: ${prefix}
+Time: ${new Date().toLocaleString()}`;
+
+          await hasuki.sendMessage(ownerNumber[0] + '@s.whatsapp.net', { text: msg });
+          console.log('📩 Owner notified successfully!');
         } catch (err) {
           console.warn('⚠️ Failed to send owner connect message:', err?.message || err);
         }
+        // ---------------------------------------
 
         // Load plugins
         fs.readdirSync('./plugins/').forEach((plugin) => {
@@ -125,7 +124,6 @@ PREFIX: ${prefix}`;
       if (!messages || !messages.length) return;
 
       for (const msg of messages) {
-        // ack status updates quietly
         if (msg.messageStubType === 68) {
           try { await hasuki.sendMessageAck(msg.key); } catch {}
         }
@@ -134,7 +132,6 @@ PREFIX: ${prefix}`;
       const mek = messages[0];
       if (!mek || !mek.message) return;
 
-      // unwrap ephemeral
       mek.message =
         getContentType(mek.message) === 'ephemeralMessage'
           ? mek.message.ephemeralMessage.message
@@ -176,7 +173,6 @@ PREFIX: ${prefix}`;
 
       const reply = (text) => hasuki.sendMessage(from, { text }, { quoted: mek });
 
-      // Run commands
       if (isCmd) {
         const cmd = commands.find(
           (c) => c.pattern === commandName || (Array.isArray(c.alias) && c.alias.includes(commandName))
@@ -198,7 +194,6 @@ PREFIX: ${prefix}`;
         }
       }
 
-      // Run passive/reply handlers
       const replyText = body;
       if (replyText) {
         for (const handler of replyHandlers) {
