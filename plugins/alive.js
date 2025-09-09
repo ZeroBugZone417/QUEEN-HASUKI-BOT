@@ -1,25 +1,43 @@
-const { cmd, commands } = require('../command');
+// commands/alive.js
+const { cmd } = require('../command');
+const os = require("os");
+const { runtime } = require('../lib/functions');
 const config = require('../config');
 
 cmd({
     pattern: "alive",
-    desc: "Check bot online or no.",
+    alias: ["status", "online", "a"],
+    desc: "Check if the bot is alive",
     category: "main",
+    react: "⚡",
     filename: __filename
-},
-async (danuwa, mek, m, {
-    from, quoted, body, isCmd, command, args, q, isGroup,
-    sender, senderNumber, botNumber2, botNumber, pushname,
-    isMe, isOwner, groupMetadata, groupName, participants,
-    groupAdmins, isBotAdmins, isAdmins, reply
-}) => {
+}, async (conn, mek, m, { from, reply }) => {
     try {
-        return await danuwa.sendMessage(from, {
+        const status = `
+╭───〔 *🤖 ${config.BOT_NAME} STATUS* 〕───◉
+│✨ *Bot is Active & Online!*
+│
+│🧠 *Owner:* ${config.OWNER_NAME}
+│⚡ *Version:* 4.0.0
+│📝 *Prefix:* [${config.PREFIX}]
+│📳 *Mode:* [${config.MODE}]
+│🖥️ *Host:* ${os.hostname()}
+│⌛ *Uptime:* ${runtime(process.uptime())}
+╰────────────────────◉
+> ${config.DESCRIPTION}`;
+
+        await conn.sendMessage(from, {
             image: { url: config.ALIVE_IMG },
-            caption: config.ALIVE_MSG
+            caption: status,
+            contextInfo: {
+                mentionedJid: [m.sender],
+                forwardingScore: 1000,
+                isForwarded: true
+            }
         }, { quoted: mek });
+
     } catch (e) {
-        console.log(e);
-        reply(`${e}`);
+        console.error("Alive Error:", e);
+        reply(`❌ An error occurred: ${e.message}`);
     }
 });
