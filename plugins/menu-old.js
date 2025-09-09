@@ -1,19 +1,14 @@
 const config = require('../config');
 const { cmd } = require('../command');
-const { runtime } = require('../lib/functions');
-const os = require("os");
-const path = require('path');
-const axios = require('axios');
-const fs = require('fs');
 
+// MENU
 cmd({
     pattern: "menu",
     desc: "menu the bot",
     category: "menu3",
     react: "⚡",
     filename: __filename
-},
-async (conn, mek, m, { from, sender, pushname, reply }) => {
+}, async (conn, mek, m, { from, sender, pushname, reply }) => {
     try {
         const dec = `╭━━━〔 *${config.BOT_NAME} Main Menu* 〕━━━╮
 ┃ ✨ *ᴏᴡɴᴇʀ:* ${config.OWNER_NAME}
@@ -42,27 +37,18 @@ async (conn, mek, m, { from, sender, pushname, reply }) => {
 ┃ 🖌️ ʟᴏɢᴏ
 ┃ 📦 ʀᴇᴘᴏ
 ╰━━━━━━━━━━━━━━━━━━━━━━━━━━━╯
-> ${config.DESCRIPTION}
-`;
+> ${config.DESCRIPTION}`;
 
-        await conn.sendMessage(
-            from,
-            {
-                image: { url: config.MENU_IMAGE_URL },
-                caption: dec,
-                contextInfo: {
-                    mentionedJid: [m.sender],
-                    forwardingScore: 999,
-                    isForwarded: true,
-                    forwardedNewsletterMessageInfo: {
-                        newsletterJid: '',
-                        newsletterName: 'xionTechX',
-                        serverMessageId: 143
-                    }
-                }
-            },
-            { quoted: mek }
-        );
+        await conn.sendMessage(from, {
+            image: { url: config.MENU_IMAGE_URL },
+            caption: dec
+        }, { quoted: mek });
+
+    } catch (e) {
+        console.log(e);
+        reply(`${e}`);
+    }
+});
 cmd({
     pattern: "logo",
     alias: ["logomenu"],
