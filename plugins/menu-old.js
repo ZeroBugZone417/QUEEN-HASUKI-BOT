@@ -63,22 +63,6 @@ async (conn, mek, m, { from, sender, pushname, reply }) => {
             },
             { quoted: mek }
         );
-
-        // Send local audio from assets/menu.m4a
-
-const audioPath = path.join(__dirname, '../assets/menu.m4a');
-await conn.sendMessage(from, {
-    audio: fs.readFileSync(audioPath),
-    mimetype: 'audio/mp4',
-    ptt: true,
-}, { quoted: mek });
-
-    } catch (e) {
-        console.error(e);
-        reply(`❌ Error:\n${e}`);
-    }
-});
-
 cmd({
     pattern: "logo",
     alias: ["logomenu"],
@@ -128,15 +112,15 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://i.ibb.co/Y46jgcpL/2289.jpg` },
+                image: { url: `https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true` },
                 caption: dec,
                 contextInfo: {
                     mentionedJid: [m.sender],
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: 'https://i.ibb.co/Y46jgcpL/2289.jpg',
-                        newsletterName: "XION",
+                        newsletterJid: 'https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true',
+                        newsletterName: "HASUKI",
                         serverMessageId: 143
                     }
                 }
@@ -194,15 +178,15 @@ async (conn, mek, m, { from, quoted, reply }) => {
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://i.ibb.co/Y46jgcpL/2289.jpg` },
+                image: { url: `https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true` },
                 caption: dec,
                 contextInfo: {
                     mentionedJid: [m.sender],
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: 'https://i.ibb.co/Y46jgcpL/2289.jpg',
-                        newsletterName: 'XION',
+                        newsletterJid: 'https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true',
+                        newsletterName: 'hasuki',
                         serverMessageId: 144
                     }
                 }
@@ -277,15 +261,15 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://i.ibb.co/Y46jgcpL/2289.jpg` },
+                image: { url: `https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true` },
                 caption: dec,
                 contextInfo: {
                     mentionedJid: [m.sender],
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: 'https://i.ibb.co/Y46jgcpL/2289.jpg',
-                        newsletterName: 'XION',
+                        newsletterJid: 'https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true',
+                        newsletterName: 'HASUKI',
                         serverMessageId: 143
                     }
                 }
@@ -355,15 +339,15 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://i.ibb.co/Y46jgcpL/2289.jpg` },
+                image: { url: `https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true` },
                 caption: dec,
                 contextInfo: {
                     mentionedJid: [m.sender],
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: 'https://i.ibb.co/Y46jgcpL/2289.jpg',
-                        newsletterName: 'XION',
+                        newsletterJid: 'https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true',
+                        newsletterName: 'HASUKI',
                         serverMessageId: 143
                     }
                 }
@@ -422,14 +406,14 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://i.ibb.co/Y46jgcpL/2289.jpg` },
+                image: { url: `https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true` },
                 caption: dec,
                 contextInfo: {
                     mentionedJid: [m.sender],
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: 'https://i.ibb.co/Y46jgcpL/2289.jpg',
+                        newsletterJid: 'https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true',
                         newsletterName: 'XION',
                         serverMessageId: 143
                     }
@@ -493,14 +477,14 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://i.ibb.co/Y46jgcpL/2289.jpg` },
+                image: { url: `https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true` },
                 caption: dec,
                 contextInfo: {
                     mentionedJid: [m.sender],
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: 'https://i.ibb.co/Y46jgcpL/2289.jpg',
+                        newsletterJid: 'https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true',
                         newsletterName: 'XION',
                         serverMessageId: 143
                     }
@@ -545,14 +529,14 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://i.ibb.co/Y46jgcpL/2289.jpg` },
+                image: { url: `https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true` },
                 caption: dec,
                 contextInfo: {
                     mentionedJid: [m.sender],
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: 'https://i.ibb.co/Y46jgcpL/2289.jpg',
+                        newsletterJid: 'https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true',
                         newsletterName: 'XION',
                         serverMessageId: 143
                     }
@@ -604,14 +588,14 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://i.ibb.co/Y46jgcpL/2289.jpg` },
+                image: { url: `https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true` },
                 caption: dec,
                 contextInfo: {
                     mentionedJid: [m.sender],
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: 'https://i.ibb.co/Y46jgcpL/2289.jpg',
+                        newsletterJid: 'https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true',
                         newsletterName: 'XION',
                         serverMessageId: 143
                     }
@@ -665,14 +649,14 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://i.ibb.co/Y46jgcpL/2289.jpg` },
+                image: { url: `https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true` },
                 caption: dec,
                 contextInfo: {
                     mentionedJid: [m.sender],
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: 'https://i.ibb.co/Y46jgcpL/2289.jpg',
+                        newsletterJid: 'https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true',
                         newsletterName: 'XION',
                         serverMessageId: 143
                     }
@@ -734,14 +718,14 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://i.ibb.co/Y46jgcpL/2289.jpg` },
+                image: { url: `https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true` },
                 caption: dec,
                 contextInfo: {
                     mentionedJid: [m.sender],
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: 'https://i.ibb.co/Y46jgcpL/2289.jpg',
+                        newsletterJid: 'https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true',
                         newsletterName: 'XION',
                         serverMessageId: 143
                     }
@@ -793,14 +777,14 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://i.ibb.co/Y46jgcpL/2289.jpg` },
+                image: { url: `https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true` },
                 caption: dec,
                 contextInfo: {
                     mentionedJid: [m.sender],
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: 'https://i.ibb.co/Y46jgcpL/2289.jpg',
+                        newsletterJid: 'https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true',
                         newsletterName: 'XION',
                         serverMessageId: 143
                     }
