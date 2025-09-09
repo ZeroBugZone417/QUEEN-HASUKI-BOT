@@ -15,5 +15,6 @@ module.exports = {
     PREFIX: process.env.PREFIX || ".",
     MODE: process.env.MODE || "Public",
     DESCRIPTION: process.env.DESCRIPTION || "Your friendly WhatsApp bot",
+    VERSION: process.env.VERSION || "1.0.0", // <--- Add version here
     MENU_IMAGE_URL: process.env.MENU_IMAGE_URL || "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true"
 };
