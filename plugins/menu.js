@@ -1,8 +1,7 @@
 const config = require('../config');
 const { cmd } = require('../command');
-const path = require('path');
 const os = require("os");
-const fs = require('fs');
+
 const { runtime } = require('../lib/functions');
 
 cmd({
@@ -14,7 +13,7 @@ cmd({
     react: "📜",
     filename: __filename
 }, 
-async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
+async (conn, mek, m, { from, reply }) => {
     try {
         let dec = `╭━━〔 🚀 *${config.BOT_NAME}* 〕━━┈⊷
 ┃◈╭─────────────────·๏
@@ -36,26 +35,11 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
                 contextInfo: {
                     mentionedJid: [m.sender],
                     forwardingScore: 999,
-                    isForwarded: true,
-                    forwardedNewsletterMessageInfo: {
-                        newsletterJid: '120363348739987203@newsletter',
-                        newsletterName: config.BOT_NAME,
-                        serverMessageId: 143
-                    }
+                    isForwarded: true
                 }
             },
             { quoted: mek }
         );
-
-        // share local audio
-        const audioPath = path.join(__dirname, '../assets/menu.m4a');
-        if (fs.existsSync(audioPath)) {
-            await conn.sendMessage(from, {
-                audio: fs.readFileSync(audioPath),
-                mimetype: 'audio/mp4',
-                ptt: true,
-            }, { quoted: mek });
-        }
 
     } catch (e) {
         console.log(e);
