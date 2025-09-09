@@ -7,7 +7,7 @@ function convertToBool(text, fault = 'true') {
 }
 
 module.exports = {
-    SESSION_ID: process.env.SESSION_ID || "bso0BRBR#n-LF1mnMGx5xJu8KRFJ9zn4oBfr1vHeUhC2OTnrpfks",
+    SESSION_ID: process.env.SESSION_ID || "zopDjA4T#G4FNOJWen9Cj79R_7BXVTYvq135Wv7bDF8m_1biWpJs",
     ALIVE_IMG: process.env.ALIVE_IMG || "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true",
     BOT_OWNER: process.env.BOT_OWNER || '94769983151',
     BOT_NAME: process.env.BOT_NAME || "Queen Hasuki",
