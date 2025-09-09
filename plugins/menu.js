@@ -1,48 +1,54 @@
-const config = require('../config');
 const { cmd } = require('../command');
-const os = require("os");
-
 const { runtime } = require('../lib/functions');
+const config = require('../config');
 
 cmd({
-    pattern: "menu2",
-    alias: ["allmenu","fullmenu"],
-    use: '.menu2',
-    desc: "Show all bot commands",
-    category: "menu",
-    react: "📜",
+    pattern: "alive",
+    alias: ["status", "online", "a"],
+    desc: "Check bot is alive or not",
+    category: "main",
+    react: "⚡",
     filename: __filename
-}, 
+},
 async (conn, mek, m, { from, reply }) => {
     try {
-        let dec = `╭━━〔 🚀 *${config.BOT_NAME}* 〕━━┈⊷
-┃◈╭─────────────────·๏
-┃◈┃• 👑 Owner : *${config.OWNER_NAME}*
-┃◈┃• ⚙️ Prefix : *[${config.PREFIX}]* 
-┃◈┃• 🌐 Platform : *Heroku*
-┃◈┃• 📦 Version : *${config.VERSION}*
-┃◈┃• ⏱️ Runtime : *${runtime(process.uptime())}*
-┃◈╰─────────────────┈⊷
-╰━━━━━━━━━━━━━━━━━━━┈⊷
+        const BOT_NAME = config.BOT_NAME || 'Queen Hasuki';
+        const OWNER_NAME = config.OWNER_NAME || 'Unknown';
+        const VERSION = config.VERSION || '4.0.0';
+        const PREFIX = config.PREFIX || '.';
+        const MODE = config.MODE || 'Default';
+        const DESCRIPTION = config.DESCRIPTION || 'Bot is online!';
 
-> ${config.DESCRIPTION}`;
+        const statusText = `
+╭───〔 *🤖 ${BOT_NAME} STATUS* 〕───◉
+│✨ *Bot is Active & Online!*
+│
+│🧠 *Owner:* ${OWNER_NAME}
+│⚡ *Version:* ${VERSION}
+│📝 *Prefix:* [${PREFIX}]
+│📳 *Mode:* [${MODE}]
+╰────────────────────◉
+> ${DESCRIPTION}
+        `.trim();
+
+        const MENU_IMAGE_URL = config.MENU_IMAGE_URL || 'https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true';
 
         await conn.sendMessage(
             from,
             {
-                image: { url: config.MENU_IMAGE_URL || 'https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true' },
-                caption: dec,
+                image: { url: MENU_IMAGE_URL },
+                caption: statusText,
                 contextInfo: {
-                    mentionedJid: [m.sender],
-                    forwardingScore: 999,
+                    mentionedJid: [m?.sender || from],
+                    forwardingScore: 1000,
                     isForwarded: true
                 }
             },
-            { quoted: mek }
+            { quoted: mek || {} }
         );
 
     } catch (e) {
-        console.log(e);
-        reply(`❌ Error: ${e}`);
+        console.error("Alive Error:", e);
+        reply(`❌ Error: ${e.message || e}`);
     }
 });
