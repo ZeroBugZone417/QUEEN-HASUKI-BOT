@@ -1,47 +1,42 @@
-const { cmd, commands } = require('../command');
+const { cmd } = require('../command');
 const axios = require('axios');
 
 cmd({
-  'pattern': "couplepp",
-  'alias': ["couple", "cpp"],
-  'react': '💑',
-  'desc': "Get a male and female couple profile picture.",
-  'category': "image",
-  'use': ".couplepp",
-  'filename': __filename
-}, async (conn, m, store, {
-  from,
-  args,
-  reply
-}) => {
+  pattern: "couplepp",
+  alias: ["couple", "cpp"],
+  react: '💑',
+  desc: "Get a male and female couple profile picture.",
+  category: "image",
+  use: ".couplepp",
+  filename: __filename
+}, async (conn, m, store, { from, args }) => {
   try {
-    reply("*💑 Fetching couple profile pictures...*");
-    
+    await conn.sendMessage(from, { text: "*💑 Fetching couple profile pictures...*" }, { quoted: m });
+
     const response = await axios.get("https://api.davidcyriltech.my.id/couplepp");
 
     if (!response.data || !response.data.success) {
-      return reply("❌ Failed to fetch couple profile pictures. Please try again later.");
+      return conn.sendMessage(from, { text: "❌ Failed to fetch couple profile pictures. Please try again later." }, { quoted: m });
     }
 
-    const malePp = response.data.male;
-    const femalePp = response.data.female;
+    const { male, female } = response.data;
 
-    if (malePp) {
+    if (male) {
       await conn.sendMessage(from, {
-        'image': { 'url': malePp },
-        'caption': "👨 Male Couple Profile Picture"
-      }, { 'quoted': m });
+        image: { url: male },
+        caption: "👨 Male Couple Profile Picture"
+      }, { quoted: m });
     }
 
-    if (femalePp) {
+    if (female) {
       await conn.sendMessage(from, {
-        'image': { 'url': femalePp },
-        'caption': "👩 Female Couple Profile Picture"
-      }, { 'quoted': m });
+        image: { url: female },
+        caption: "👩 Female Couple Profile Picture"
+      }, { quoted: m });
     }
 
   } catch (error) {
     console.error(error);
-    reply("❌ An error occurred while fetching the couple profile pictures.");
+    await conn.sendMessage(from, { text: "❌ An error occurred while fetching the couple profile pictures." }, { quoted: m });
   }
 });
