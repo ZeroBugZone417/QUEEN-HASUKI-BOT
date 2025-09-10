@@ -1,47 +1,69 @@
-/**
- * Facebook Video Downloader Plugin for WhatsApp Bot
- * Author: Dineth Sudarshana
- * Bot Command: .facebookdl
- */
-
-const axios = require("axios");
 const { cmd } = require("../command");
+const getFbVideoInfo = require("@xaviabot/fb-downloader");
 
-cmd({
-  pattern: "facebookdl",
-  alias: ["fb", "fbdl", "fbvideo"],
-  desc: "Download Facebook videos easily",
-  category: "download",
-  filename: __filename,
-  use: "<Facebook URL>",
-}, async (conn, m, store, { from, q, reply }) => {
-  try {
-    // Validate URL
-    if (!q || !q.startsWith("http")) {
-      return reply("*❌ Please provide a valid Facebook URL*\n\nExample: `.facebookdl https://www.facebook.com/...`");
+cmd(
+  {
+    pattern: "fb",
+    alias: ["facebook"],
+    react: "✅",
+    desc: "Download Facebook Video",
+    category: "download",
+    filename: __filename,
+  },
+  async (hasuki, mek, m, { from, quoted, q, reply }) => {
+    try {
+      if (!q) 
+        return reply("❌ *Please provide a valid Facebook video URL!*");
+
+      const fbRegex = /(https?:\/\/)?(www\.)?(facebook|fb)\.com\/.+/;
+      if (!fbRegex.test(q))
+        return reply("⚠️ *Invalid Facebook URL! Please check and try again.*");
+
+      reply("⏳ *Downloading your video...*");
+
+      const result = await getFbVideoInfo(q);
+      if (!result || (!result.sd && !result.hd))
+        return reply("❌ *Failed to download video. Please try again later.*");
+
+      const { title, sd, hd } = result;
+      const bestQualityUrl = hd || sd;
+      const qualityText = hd ? "HD" : "SD";
+
+      const desc = `
+╔═══════════════════╗
+║  ☆FB DOWNLOADER ☆║
+╠═══════════════════╣
+║ 🎬 Title   : ${title || "Unknown"}
+║ 📺 Quality : ${qualityText}
+╚═══════════════════╝
+`;
+
+      // Send thumbnail first
+      await hasuki.sendMessage(
+        from,
+        {
+          image: {
+            url: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true",
+          },
+          caption: desc,
+        },
+        { quoted: mek }
+      );
+
+      // Then send video
+      await hasuki.sendMessage(
+        from,
+        {
+          video: { url: bestQualityUrl },
+          caption: `✅ *Downloaded successfully in ${qualityText} quality!*`,
+        },
+        { quoted: mek }
+      );
+
+      return reply("🌟 *Thank you for using Queen Hasuki !* 🌟");
+    } catch (e) {
+      console.error(e);
+      reply(`❗ *Error:* ${e.message || e}`);
     }
-
-    // Show loading reaction
-    await conn.sendMessage(from, { react: { text: "⏳", key: m.key } });
-
-    // Fetch video data from API
-    const apiUrl = `https://api.fbdown.net/api/video?url=${encodeURIComponent(q)}`;
-    const { data } = await axios.get(apiUrl);
-
-    if (!data || !data.status || !data.data?.url) {
-      return reply("❌ Failed to fetch the video. Make sure the URL is correct or try another video.");
-    }
-
-    const videoUrl = data.data.url;
-
-    // Send video to WhatsApp
-    await conn.sendMessage(from, {
-      video: { url: videoUrl },
-      caption: `📥 *Facebook Video Downloaded*\n- Powered By JesterTechX ✅`,
-    }, { quoted: m });
-
-  } catch (error) {
-    console.error("FacebookDL Error:", error);
-    reply("❌ An error occurred while downloading the video. Try again later.");
   }
-});
+);
