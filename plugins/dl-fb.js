@@ -1,41 +1,47 @@
+/**
+ * Facebook Video Downloader Plugin for WhatsApp Bot
+ * Author: Dineth Sudarshana
+ * Bot Command: .facebookdl
+ */
+
 const axios = require("axios");
 const { cmd } = require("../command");
 
 cmd({
-  pattern: "fb",
-  alias: ["facebook", "fbdl"],
-  desc: "Download Facebook videos",
+  pattern: "facebookdl",
+  alias: ["fb", "fbdl", "fbvideo"],
+  desc: "Download Facebook videos easily",
   category: "download",
   filename: __filename,
   use: "<Facebook URL>",
-}, async (conn, m, store, { from, args, q, reply }) => {
+}, async (conn, m, store, { from, q, reply }) => {
   try {
-    // Check if a URL is provided
+    // Validate URL
     if (!q || !q.startsWith("http")) {
-      return reply("*`Need a valid Facebook URL`*\n\nExample: `.fb https://www.facebook.com/...`");
+      return reply("*❌ Please provide a valid Facebook URL*\n\nExample: `.facebookdl https://www.facebook.com/...`");
     }
 
-    // Add a loading react
-    await conn.sendMessage(from, { react: { text: '⏳', key: m.key } });
+    // Show loading reaction
+    await conn.sendMessage(from, { react: { text: "⏳", key: m.key } });
 
-    // Fetch video URL from the API
+    // Fetch video data from API
     const apiUrl = `https://api.fbdown.net/api/video?url=${encodeURIComponent(q)}`;
     const { data } = await axios.get(apiUrl);
 
-    // Check if the API response is valid
-    if (!data.status || !data.data || !data.data.url) {
-      return reply("❌ Failed to fetch the video. Please try another link.");
+    if (!data || !data.status || !data.data?.url) {
+      return reply("❌ Failed to fetch the video. Make sure the URL is correct or try another video.");
     }
 
-    // Send the video to the user
     const videoUrl = data.data.url;
+
+    // Send video to WhatsApp
     await conn.sendMessage(from, {
       video: { url: videoUrl },
-      caption: "📥 *Facebook Video Downloaded*\n\n- Powered By JesterTechX ✅",
+      caption: `📥 *Facebook Video Downloaded*\n- Powered By JesterTechX ✅`,
     }, { quoted: m });
 
   } catch (error) {
-    console.error("Error:", error); // Log the error for debugging
-    reply("❌ Error fetching the video. Please try again.");
+    console.error("FacebookDL Error:", error);
+    reply("❌ An error occurred while downloading the video. Try again later.");
   }
 });
