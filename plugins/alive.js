@@ -13,9 +13,11 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
     try {
+        const aliveText = config.ALIVE_TEXT || "Bot is Active & Online!";
+
         const status = `
 ╭───〔 *🤖 ${config.BOT_NAME} STATUS* 〕───◉
-│✨ *Bot is Active & Online!*
+│✨ *${aliveText}*
 │
 │🧠 *Owner:* ${config.OWNER_NAME}
 │⚡ *Version:* 4.0.0
