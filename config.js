@@ -50,7 +50,9 @@ OWNER_NAME: process.env.OWNER_NAME || "DinethSudarshana",
 DESCRIPTION: process.env.DESCRIPTION || "*©𝙿𝙾𝚆𝙴𝚁𝙳 𝙱𝚈 𝚉𝙴𝚁𝙾 𝙱𝚄𝙶 𝚉𝙾𝙽𝙴*",
 // add bot owner name    
 ALIVE_IMG: process.env.ALIVE_IMG || "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true",
-// add img for alive msg
+// add img for alive msg  
+ALIVE_TEXT: "Bot is Active & Online!"  
+// add text alive 
 READ_MESSAGE: process.env.READ_MESSAGE || "false",
 // Turn true or false for automatic read msgs
 AUTO_REACT: process.env.AUTO_REACT || "false",
