@@ -33,7 +33,7 @@ async (conn, mek, m, { from, reply, args }) => {
 ┃◈┃• *📝 Description*: ${data.description.replace(/\n/g, '\n┃◈┃• ')}
 ┃◈└───────────┈⊷
 ╰──────────────┈⊷
-> 𝓐𝓻𝓼𝓵𝓪𝓷_𝓜𝓓`;
+> Zero Bug Zone`;
 
         // Send message with channel image
         await conn.sendMessage(from, {
