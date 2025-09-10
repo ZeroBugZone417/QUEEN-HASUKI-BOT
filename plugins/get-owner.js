@@ -1,34 +1,60 @@
-const { cmd } = require('../command');
-const config = require('../config');
+const config = require('../config'); // ✅ Import config.js
 
-cmd({
-    pattern: "owner",
-    react: "✅", 
-    desc: "Get owner number",
-    category: "main",
-    filename: __filename
-}, 
-async (conn, mek, m, { from }) => {
-    try {
-        const ownerNumber = config.OWNER_NUMBER;
-        const ownerName = config.OWNER_NAME;
+module.exports = {
+    commands: ['owner', 'creator'],
+    handler: async ({ sock, m, sender, contextInfo = {} }) => {
+        try {
+            const ownerNumber = config.OWNER_NUMBER.replace(/[^0-9]/g, ''); // clean number
+            const ownerName = config.OWNER_NAME;
+            const botName = config.BOT_NAME; // ✅ Get bot name from config.js
 
-        const vcard = 'BEGIN:VCARD\n' +
-                      'VERSION:3.0\n' +
-                      `FN:${ownerName}\n` +  
-                      `TEL;type=CELL;type=VOICE;waid=${ownerNumber.replace('+', '')}:${ownerNumber}\n` + 
-                      'END:VCARD';
+            // ✅ Build vCard
+            const vcard = `
+BEGIN:VCARD
+VERSION:3.0
+FN:${ownerName}
+ORG:Silva Tech Inc
+TEL;type=CELL;type=VOICE;waid=${ownerNumber}:${ownerNumber}
+END:VCARD
+`.trim();
 
-        // Only send contact card
-        await conn.sendMessage(from, {
-            contacts: {
-                displayName: ownerName,
-                contacts: [{ vcard }]
-            }
-        });
+            // ✅ Send Contact Card with Preview
+            await sock.sendMessage(sender, {
+                contacts: {
+                    displayName: ownerName,
+                    contacts: [{ vcard }]
+                },
+                contextInfo: {
+                    externalAdReply: {
+                        title: `👑 ${botName} Owner`,
+                        body: "Tap to view contact details",
+                        thumbnailUrl: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true", // ✅ Your bot image
+                        sourceUrl: "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true",
+                        mediaType: 1,
+                        renderLargerThumbnail: true
+                    }
+                }
+            }, { quoted: m });
 
-    } catch (error) {
-        console.error(error);
-        reply(`An error occurred: ${error.message}`);
+            // ✅ Send Owner Info as Text
+            await sock.sendMessage(sender, {
+                text: `
+*👑 ${botName} Owner Info:*
+
+📛 Name: ${ownerName}
+📞 Number: wa.me/${ownerNumber}
+🌐 Github: https://github.com/ZeroBugZone417
+✨ _Powered by Zero Bug Zone_
+                `.trim(),
+                contextInfo
+            }, { quoted: m });
+
+        } catch (error) {
+            console.error('❌ Owner Plugin Error:', error.message);
+            await sock.sendMessage(sender, {
+                text: '⚠️ Failed to fetch owner details from config.js.',
+                contextInfo
+            }, { quoted: m });
+        }
     }
-});
+};
