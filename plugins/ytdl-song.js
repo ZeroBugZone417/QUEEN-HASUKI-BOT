@@ -1,7 +1,8 @@
 const { cmd } = require("../command");
 const yts = require("yt-search");
-const axios = require("axios");
-const config = require("../config"); // ensure this loads .env variables
+const ytdl = require("ytdl-core");
+const fs = require("fs");
+const path = require("path");
 
 cmd({
   pattern: "song",
@@ -33,19 +34,22 @@ cmd({
       return reply("❌ Invalid YouTube URL!");
     }
 
-    // Fetch video info
-    const searchInfo = await yts(videoUrl);
-    if (!searchInfo?.videos?.length) return reply("❌ Failed to fetch video info!");
-    info = searchInfo.videos[0];
+    await reply("⏳ Fetching video info, please wait...");
+
+    // Fetch video info with ytdl-core
+    info = await ytdl.getInfo(videoUrl);
+
+    const title = info.videoDetails.title;
+    const thumbnail = info.videoDetails.thumbnails[info.videoDetails.thumbnails.length - 1].url;
 
     // Send video metadata + thumbnail
     const desc = `
 🧩 *AUDIO DOWNLOADER* 🧩
 
-📌 *Title:* ${info.title}
-⏱️ *Uploaded:* ${info.timestamp || "N/A"} (${info.ago || "N/A"})
-👀 *Views:* ${info.views?.toLocaleString() || "N/A"}
-🔗 *URL:* ${info.url}
+📌 *Title:* ${title}
+⏱️ *Uploaded:* ${info.videoDetails.uploadDate || "N/A"}
+👀 *Views:* ${parseInt(info.videoDetails.viewCount).toLocaleString() || "N/A"}
+🔗 *URL:* ${videoUrl}
 
 ━━━━━━━━━━━━━━━━━━
 *${process.env.DESCRIPTION || "ZERO BUG ZONE🪀"}*
@@ -53,33 +57,39 @@ cmd({
 
     await bot.sendMessage(
       from,
-      { image: { url: info.thumbnail }, caption: desc },
+      { image: { url: thumbnail }, caption: desc },
       { quoted: mek }
     );
 
     await reply("⏳ Downloading audio, please wait...");
 
-    // Download audio from API
-    const apiUrl = `https://apis.davidcyriltech.my.id/download/ytmp3?url=${encodeURIComponent(videoUrl)}`;
-    const res = await axios.get(apiUrl);
-    const data = res.data;
+    // Download audio to temp file
+    const fileName = path.join(__dirname, `${title}.mp3`);
+    const stream = ytdl(videoUrl, { filter: "audioonly", quality: "highestaudio" });
+    const writeStream = fs.createWriteStream(fileName);
 
-    if (!data?.status || !data?.result?.download_url) {
-      return reply("❌ Failed to download audio!");
-    }
+    stream.pipe(writeStream);
 
-    // Send audio
-    await bot.sendMessage(
-      from,
-      {
-        audio: { url: data.result.download_url },
-        mimetype: "audio/mpeg",
-        fileName: `${info.title}.mp3`,
-      },
-      { quoted: mek }
-    );
+    writeStream.on("finish", async () => {
+      await bot.sendMessage(
+        from,
+        {
+          audio: { url: fileName },
+          mimetype: "audio/mpeg",
+          fileName: `${title}.mp3`,
+        },
+        { quoted: mek }
+      );
 
-    await reply(`✅ *${info.title}* downloaded successfully!`);
+      fs.unlinkSync(fileName); // delete temp file
+      await reply(`✅ *${title}* downloaded successfully!`);
+    });
+
+    writeStream.on("error", (err) => {
+      console.error(err);
+      reply("❌ Failed to download audio!");
+    });
+
   } catch (error) {
     console.error(error);
     reply(`❌ Error: ${error.message}`);
