@@ -1,215 +1,172 @@
 {
   "name": "QUEEN-HASUKI",
-  "description": "Javascript WhatsApp bot made by Dineth sudarshana",
+  "description": "Javascript WhatsApp bot made by Dineth Sudarshana",
   "logo": "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/LOGO.png?raw=true",
-  "keywords": ["QUEEN-HASUKI"],
+  "keywords": ["QUEEN-HASUKI", "WhatsApp", "Bot", "MD-Bot"],
   "success_url": "/",
+  "stack": "heroku-24",
 
-  {
   
-    "stack": "container",
-  "env": {
+ "env": {
     "SESSION_ID": {
       "description": "Put the session-id here.",
       "required": true,
       "value": ""
-    },  
-    
+    },
     "STICKER_NAME": {
-      "description": "type your sticker pack name.",
+      "description": "Type your sticker pack name.",
       "required": false,
-      "value": "𝐸𝑅𝐹𝒜𝒩"
-    }, 
-      
+      "value": "Hasuki"
+    },
     "PREFIX": {
-      "description": "paste your bot prefix note! Don't apply null prefix.",
+      "description": "Bot prefix, e.g. .",
       "required": false,
       "value": "."
     },
-    
     "MODE": {
-      "description": "select your bot work type public-private-inbox-group.",
+      "description": "Select bot work type: public/private/inbox/group",
       "required": false,
       "value": "public"
-      
     },
-
-     "ANTI_DELETE": {
-      "description": "set true for show deleted messages.",
+    "ANTI_DELETE": {
+      "description": "Show deleted messages",
       "required": false,
-      "value": "true"  
+      "value": "true"
     },
-    
     "ALWAYS_ONLINE": {
-      "description": "Make it true if want always online.",
+      "description": "Keep bot always online",
       "required": false,
-      "value": "false"  
-    },    
-   
+      "value": "false"
+    },
     "AUTO_REPLY": {
-      "description": "Make it true if you want automatic reply.",
+      "description": "Enable automatic replies",
       "required": false,
       "value": "false"
-    }, 
-
+    },
     "AUTO_STICKER": {
-      "description": "Make it true if you want automatic sticker.",
+      "description": "Enable automatic sticker",
       "required": false,
       "value": "false"
-    }, 
-
-
+    },
     "AUTO_STATUS_SEEN": {
-      "description": "Make it true for automatic status seen.",
+      "description": "Automatically mark status as seen",
       "required": true,
       "value": "true"
-    }, 
-
+    },
     "AUTO_STATUS_REACT": {
-      "description": "make it true for automatic status reaction or like.",
+      "description": "Automatically react to status",
       "required": true,
       "value": "true"
-    }, 
-
+    },
     "AUTO_STATUS_REPLY": {
-      "description": "Make it true for auto reply msg on status seen.",
+      "description": "Automatically reply to status messages",
       "required": true,
       "value": "false"
-    }, 
-
+    },
     "AUTO_STATUS_MSG": {
-      "description": "Type custom message on status reply",
+      "description": "Custom message for status reply",
       "required": true,
-      "value": "*SEEN YOUR STATUS BY ARSLAN-MD-V2 🖤*"
-   
-     }, 
-    
+      "value": "*SEEN YOUR STATUS BY QUEEN-HASUKI 🖤*"
+    },
     "OWNER_NAME": {
-      "description": "Type Bot Owner Name.",
+      "description": "Bot Owner Name",
       "required": false,
-      "value": "ArslanMD Official"
-}, 
-
+      "value": "Dineth Sudarshana"
+    },
     "OWNER_NUMBER": {
-      "description": "put the owner number for bot.",
+      "description": "Owner WhatsApp number",
       "required": false,
-      "value": "923237045919"
-
-    }, 
-
+      "value": "94769983151"
+    },
     "BOT_NAME": {
-      "description": "Type here the bot name.",
+      "description": "Bot Name",
       "required": false,
-      "value": "ARSLAN-MD-V2"
-
-      }, 
-
+      "value": "QUEEN-HASUKI"
+    },
     "ANTI_LINK": {
-      "description": "Make it true if you want bot auto remove group link.",
+      "description": "Auto remove group links",
       "required": true,
       "value": "true"
-      
     },
-
-     "ANTI_LINK_KICK": {
-      "description": "Make it true if you want bot auto remove group link.",
+    "ANTI_LINK_KICK": {
+      "description": "Auto kick users sharing links",
       "required": true,
       "value": "false"
-      
     },
-    
     "ANTI_BAD": {
-      "description": "Make it true if you want bot auto delete bad words.",
+      "description": "Auto delete bad words",
       "required": false,
       "value": "false"
     },
-
-   "MENTION_REPLY": {
-      "description": "make it true if want mention reply if someone menetion you.",
+    "MENTION_REPLY": {
+      "description": "Enable mention reply",
       "required": false,
       "value": "false"
     },
-    
     "MENU_IMAGE_URL": {
-      "description": "add url for mention reply and menu if want.",
+      "description": "Custom menu image URL",
       "required": false,
       "value": "https://files.catbox.moe/4964gx.jpg"
     },
-    
-     "DESCRIPTION": {
-      "description": "add caption for menu and other",
+    "DESCRIPTION": {
+      "description": "Menu caption / bot description",
       "required": false,
-      "value": "*CREATER αяѕℓαηм∂ σƒƒι¢ιαℓ*"
+      "value": "*Zero Bug Zone*"
     },
-
-      "DELETE_LINKS": {
-      "description": "remove links from group automatically without removing member",
+    "DELETE_LINKS": {
+      "description": "Remove links from group automatically without removing member",
       "required": false,
       "value": "false"
     },
-    
     "AUTO_RECORDING": {
-      "description": "Make it true if you want auto recoding.",
+      "description": "Enable auto recording",
       "required": false,
       "value": "false"
     },
-
     "AUTO_TYPING": {
-      "description": "Make it true if you want auto typing.",
+      "description": "Enable auto typing",
       "required": false,
       "value": "false"
     },
-
     "AUTO_REACT": {
-      "description": "Make it true if you want react on every message.",
+      "description": "React on every message",
       "required": false,
       "value": "false"
     },
-    
     "CUSTOM_REACT": {
-      "description": "Make it true if you want custom reactions.",
+      "description": "Enable custom reactions",
       "required": false,
       "value": "false"
-      
-    }, 
-    
+    },
     "CUSTOM_REACT_EMOJIS": {
-      "description": "put here custom react react emojis.",
+      "description": "Custom react emojis",
       "required": false,
       "value": "💝,💖,💗,❤️‍🩹,❤️,🧡,💛,💚,💙,💜,🤎,🖤,🤍"
-    }, 
-    
+    },
     "ANTI_DEL_PATH": {
-      "description": "change it to -same- if you want to resend deleted message in same chat othwise inbox",
+      "description": "Resend deleted messages in same chat or inbox",
       "required": false,
       "value": "inbox"
-    }, 
-
+    },
     "ADMIN_EVENTS": {
-      "description": "make it true if want know who promote or demote a member .",
+      "description": "Notify on promote/demote events",
       "required": false,
       "value": "false"
     },
-
     "WELCOME": {
-      "description": "make it true if want goodbye and welcome message in groups.",
+      "description": "Enable welcome/goodbye messages",
       "required": false,
       "value": "false"
     },
-
     "READ_MESSAGE": {
-      "description": "Make it true if you want bot read your all sms just now.",
+      "description": "Bot reads all messages",
       "required": false,
       "value": "false"
     }
-
-},
-
-     "buildpacks": [
-        {
-            "url": "https://github.com/heroku/heroku-buildpack-nodejs.git"
-        }
-     ],
-  "stack": "heroku-24"
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs.git"
+    }
+  ]
 }
-  
