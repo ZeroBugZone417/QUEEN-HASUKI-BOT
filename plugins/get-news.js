@@ -3,31 +3,35 @@ const { cmd } = require('../command');
 
 cmd({
     pattern: "news",
-    desc: "Get the latest news headlines.",
+    desc: "Get the latest news from ITN and Ada Derana.",
     category: "news",
     react: "📰",
     filename: __filename
-},
-async (conn, mek, m, { from, reply }) => {
+}, async (conn, mek, m, { from, reply }) => {
     try {
-        const apiKey="0f2c43ab11324578a7b1709651736382";
-        const response = await axios.get(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`);
-        const articles = response.data.articles;
+        // Fetch ITN news
+        const itnResponse = await axios.get('https://supun-md-api-rho.vercel.app/api/news/itn');
+        const itnArticles = itnResponse.data.articles;
 
-        if (!articles.length) return reply("No news articles found.");
+        // Fetch Ada Derana news
+        const adaDeranaResponse = await axios.get('https://supun-md-api-rho.vercel.app/api/news/adaderana');
+        const adaDeranaArticles = adaDeranaResponse.data.articles;
+
+        // Combine both articles
+        const allArticles = [...itnArticles, ...adaDeranaArticles];
+
+        if (!allArticles.length) return await reply("❌ No news articles found.");
 
         // Send each article as a separate message with image and title
-        for (let i = 0; i < Math.min(articles.length, 5); i++) {
-            const article = articles[i];
+        for (let i = 0; i < Math.min(allArticles.length, 5); i++) {
+            const article = allArticles[i];
             let message = `
 📰 *${article.title}*
 ⚠️ _${article.description}_
 🔗 _${article.url}_
 
-  ©ᴘᴏᴡᴇʀᴇᴅ ʙʏ XION TᴇᴄʜX
+  ©Powered by zero bug zone
             `;
-
-            console.log('Article URL:', article.urlToImage); // Log image URL for debugging
 
             if (article.urlToImage) {
                 // Send image with caption
@@ -36,9 +40,9 @@ async (conn, mek, m, { from, reply }) => {
                 // Send text message if no image is available
                 await conn.sendMessage(from, { text: message });
             }
-        };
+        }
     } catch (e) {
         console.error("Error fetching news:", e);
-        reply("Could not fetch news. Please try again later.");
+        await reply("❌ Could not fetch news. Please try again later.");
     }
 });
