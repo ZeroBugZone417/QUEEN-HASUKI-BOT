@@ -1,5 +1,6 @@
 const { cmd } = require('../command');
 const axios = require('axios');
+const config = require('../config');
 
 cmd({
   pattern: "ytstalk",
@@ -26,21 +27,23 @@ cmd({
     }
 
     const yt = data.data;
-    const caption = `╭━━━〔 *YOUTUBE STALKER* 〕━━━⊷\n`
-      + `┃👤 *Username:* ${yt.username}\n`
-      + `┃📊 *Subscribers:* ${yt.subscriber_count}\n`
-      + `┃🎥 *Videos:* ${yt.video_count}\n`
-      + `┃🔗 *Channel Link:* (${yt.channel})\n`
-      + `╰━━━⪼\n\n`
-      + `🔹 *𝓐𝓻𝓼𝓵𝓪𝓷_𝓜𝓓*`;
+
+    const caption = `╭━━━〔 *YOUTUBE STALKER* 〕━━━⊷
+┃👤 *Username:* ${yt.username || "N/A"}
+┃📊 *Subscribers:* ${yt.subscriber_count || "N/A"}
+┃🎥 *Videos:* ${yt.video_count || "N/A"}
+┃🔗 *Channel Link:* ${yt.channel || "N/A"}
+╰━━━⪼
+
+🔹 *${config.BOT_NAME}*`;
 
     await conn.sendMessage(from, {
       image: { url: yt.avatar },
-      caption: caption
+      caption
     }, { quoted: m });
 
   } catch (error) {
-    console.error("Error:", error);
+    console.error("YTSTALK Error:", error);
     reply("❌ An error occurred while processing your request. Please try again.");
   }
 });
