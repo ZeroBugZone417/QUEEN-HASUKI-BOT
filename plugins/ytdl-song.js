@@ -1,97 +1,107 @@
 const { cmd } = require("../command");
 const yts = require("yt-search");
-const ytdl = require("ytdl-core");
-const fs = require("fs");
-const path = require("path");
+const axios = require("axios");
 
-cmd({
-  pattern: "song",
-  alias: ["yt", "play2", "music"],
-  react: "🎵",
-  desc: "Download YouTube Audio",
-  category: "download",
-  use: ".song <name or URL>",
-  filename: __filename,
-}, async (bot, mek, m, { from, args, reply }) => {
-  try {
-    const query = args.join(" ");
-    if (!query) return reply("❌ Please provide a song name or YouTube URL!");
-
-    let videoUrl, info;
-
-    // Check if it's a URL
+cmd(
+  {
+    pattern: "song",
+    react: "🎵",
+    desc: "Download YouTube Audio",
+    category: "download",
+    filename: __filename,
+  },
+  async (malvin, mek, m, { from, args, reply }) => {
     try {
-      videoUrl = new URL(query).toString();
-    } catch {
-      // If keyword, search YouTube
-      const search = await yts(query);
-      if (!search?.videos?.length) return reply("❌ No videos found!");
-      videoUrl = search.videos[0].url;
-    }
+      const q = args.join(" ");
+      if (!q) return reply("*Provide a name or a YouTube link.* 🎵❤️");
 
-    // Validate URL
-    if (!videoUrl.includes("youtube.com") && !videoUrl.includes("youtu.be")) {
-      return reply("❌ Invalid YouTube URL!");
-    }
+      // 1) Find the URL
+      let url = q;
+      try {
+        url = new URL(q).toString();
+      } catch {
+        const s = await yts(q);
+        if (!s?.videos?.length) return reply("❌ No videos found!");
+        url = s.videos[0].url;
+      }
 
-    await reply("⏳ Fetching video info, please wait...");
+      // 2) Validate URL
+      if (!url.includes("youtube.com") && !url.includes("youtu.be")) {
+        return reply("❌ Invalid YouTube URL!");
+      }
 
-    // Fetch video info with ytdl-core
-    info = await ytdl.getInfo(videoUrl);
+      // 3) Fetch metadata
+      let info;
+      try {
+        const searchResult = await yts(url);
+        if (!searchResult?.videos?.length) {
+          return reply("❌ Failed to fetch video metadata!");
+        }
+        info = searchResult.videos[0];
+      } catch (e) {
+        console.error("Metadata fetch error:", e);
+        return reply("❌ Error fetching video metadata: " + e.message);
+      }
 
-    const title = info.videoDetails.title;
-    const thumbnail = info.videoDetails.thumbnails[info.videoDetails.thumbnails.length - 1].url;
-
-    // Send video metadata + thumbnail
-    const desc = `
+      // 4) Send metadata + thumbnail
+      const desc = `
 🧩 *AUDIO DOWNLOADER* 🧩
 
-📌 *Title:* ${title}
-⏱️ *Uploaded:* ${info.videoDetails.uploadDate || "N/A"}
-👀 *Views:* ${parseInt(info.videoDetails.viewCount).toLocaleString() || "N/A"}
-🔗 *URL:* ${videoUrl}
+📌 *Title:* ${info.title || "Unknown"}
+⏱️ *Uploaded:* ${info.timestamp || "N/A"} (${info.ago || "N/A"})
+👀 *Views:* ${info.views?.toLocaleString() || "N/A"}
+🔗 *Download URL:* ${info.url || url}
 
 ━━━━━━━━━━━━━━━━━━
-*${process.env.DESCRIPTION || "ZERO BUG ZONE🪀"}*
-    `.trim();
+*ZERO BUG ZONE🪀*
+      `.trim();
 
-    await bot.sendMessage(
-      from,
-      { image: { url: thumbnail }, caption: desc },
-      { quoted: mek }
-    );
+      await malvin.sendMessage(
+        from,
+        { image: { url: info.thumbnail || "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true" }, caption: desc },
+        { quoted: mek }
+      );
 
-    await reply("⏳ Downloading audio, please wait...");
+      // 5) Audio download helper
+      const downloadAudio = async (videoUrl, quality = "mp3") => {
+        const apiUrl = `https://p.oceansaver.in/ajax/download.php?format=${quality}&url=${encodeURIComponent(
+          videoUrl
+        )}&api=dfcb6d76f2f6a9894gjkege8a4ab232222`;
 
-    // Download audio to temp file
-    const fileName = path.join(__dirname, `${title}.mp3`);
-    const stream = ytdl(videoUrl, { filter: "audioonly", quality: "highestaudio" });
-    const writeStream = fs.createWriteStream(fileName);
+        const res = await axios.get(apiUrl);
+        if (!res.data.success) throw new Error("Failed to fetch audio details.");
 
-    stream.pipe(writeStream);
+        const { id, title } = res.data;
+        const progressUrl = `https://p.oceansaver.in/ajax/progress.php?id=${id}`;
 
-    writeStream.on("finish", async () => {
-      await bot.sendMessage(
+        // Poll until ready
+        while (true) {
+          const prog = (await axios.get(progressUrl)).data;
+          if (prog.success && prog.progress === 1000) {
+            const audio = await axios.get(prog.download_url, { responseType: "arraybuffer" });
+            return { buffer: audio.data, title: title || info.title || "audio" };
+          }
+          await new Promise((r) => setTimeout(r, 5000));
+        }
+      };
+
+      // 6) Download + send
+      const { buffer, title } = await downloadAudio(url);
+      await malvin.sendMessage(
         from,
         {
-          audio: { url: fileName },
+          audio: buffer,
           mimetype: "audio/mpeg",
+          ptt: false,
           fileName: `${title}.mp3`,
         },
         { quoted: mek }
       );
 
-      fs.unlinkSync(fileName); // delete temp file
-      await reply(`✅ *${title}* downloaded successfully!`);
-    });
-
-    writeStream.on("error", (err) => {
-      console.error(err);
-      reply("❌ Failed to download audio!");
-    });
-
-  } catch (error) {
-    console.error(error);
-    reply(`❌ Error: ${error.message}`);
+      reply("*Thanks for using Queen Hasuki bot!* 🎵");
+    } catch (e) {
+      console.error("Error:", e);
+      reply(`❌ Error: ${e.message}`);
+    }
   }
-});
+);
