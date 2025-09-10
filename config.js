@@ -47,7 +47,7 @@ OWNER_NUMBER: process.env.OWNER_NUMBER || "94769983151",
 // add your bot owner number
 OWNER_NAME: process.env.OWNER_NAME || "DinethSudarshana",
 // add bot owner name
-DESCRIPTION: process.env.DESCRIPTION || "*©𝙿𝙾𝚆𝙴𝚁𝙴𝙳 𝙱𝚈 Zero Bug Zone*",
+DESCRIPTION: process.env.DESCRIPTION || "*©𝙿𝙾𝚆𝙴𝚁𝙳 𝙱𝚈 𝚉𝙴𝚁𝙾 𝙱𝚄𝙶 𝚉𝙾𝙽𝙴*",
 // add bot owner name    
 ALIVE_IMG: process.env.ALIVE_IMG || "https://github.com/ZeroBugZone417/QUEEN-HASUKI-BOT/blob/main/lib/QUEEN%20HASUKI.png?raw=true",
 // add img for alive msg
