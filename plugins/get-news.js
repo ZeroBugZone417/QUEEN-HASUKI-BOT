@@ -11,38 +11,56 @@ cmd({
     try {
         // Fetch ITN news
         const itnResponse = await axios.get('https://supun-md-api-rho.vercel.app/api/news/itn');
-        const itnArticles = itnResponse.data.articles;
+        const itnArticles = itnResponse.data.articles || itnResponse.data.data || [];
 
         // Fetch Ada Derana news
-        const adaDeranaResponse = await axios.get('https://supun-md-api-rho.vercel.app/api/news/adaderana');
-        const adaDeranaArticles = adaDeranaResponse.data.articles;
+        const adaResponse = await axios.get('https://supun-md-api-rho.vercel.app/api/news/adaderana');
+        const adaArticles = adaResponse.data.articles || adaResponse.data.data || [];
 
-        // Combine both articles
-        const allArticles = [...itnArticles, ...adaDeranaArticles];
+        // Combine articles
+        const allArticles = [...itnArticles, ...adaArticles];
 
-        if (!allArticles.length) return await reply("❌ No news articles found.");
+        if (!allArticles.length) {
+            return await reply("❌ No news articles found.");
+        }
 
-        // Send each article as a separate message with image and title
-        for (let i = 0; i < Math.min(allArticles.length, 5); i++) {
-            const article = allArticles[i];
-            let message = `
-📰 *${article.title}*
-⚠️ _${article.description}_
-🔗 _${article.url}_
+        // Limit to 5 articles
+        const articlesToSend = allArticles.slice(0, 5);
 
-  ©Powered by zero bug zone
+        for (const article of articlesToSend) {
+            const title = article.title || "No Title";
+            const description = article.description || "No Description";
+            const url = article.url || "No URL";
+            const imageUrl = article.urlToImage;
+
+            const message = `
+📰 *${title}*
+⚠️ _${description}_
+🔗 _${url}_
+
+©Powerd By Zero Bug Zone
             `;
 
-            if (article.urlToImage) {
-                // Send image with caption
-                await conn.sendMessage(from, { image: { url: article.urlToImage }, caption: message });
-            } else {
-                // Send text message if no image is available
-                await conn.sendMessage(from, { text: message });
+            try {
+                if (imageUrl) {
+                    // Send image with caption
+                    await conn.sendMessage(from, {
+                        image: { url: imageUrl },
+                        caption: message,
+                        mimetype: 'image/jpeg'
+                    });
+                } else {
+                    // Send as text if no image
+                    await conn.sendMessage(from, { text: message });
+                }
+            } catch (err) {
+                console.error("Failed to send article:", err);
+                await reply(`⚠️ Failed to send an article: ${title}`);
             }
         }
-    } catch (e) {
-        console.error("Error fetching news:", e);
+
+    } catch (err) {
+        console.error("Error fetching news:", err);
         await reply("❌ Could not fetch news. Please try again later.");
     }
 });
