@@ -21,82 +21,67 @@ cmd({
     try {
         if (!q) return await reply("❌ Please provide a Query or Youtube URL!");
 
-        let id = q.startsWith("https://") ? replaceYouTubeID(q) : null;
-
+        // ✅ Get video ID
+        let id = q.startsWith("http") ? replaceYouTubeID(q) : null;
         if (!id) {
             const searchResults = await dy_scrap.ytsearch(q);
             if (!searchResults?.results?.length) return await reply("❌ No results found!");
             id = searchResults.results[0].videoId;
         }
 
-        const data = await dy_scrap.ytsearch(`https://youtube.com/watch?v=${id}`);
-        if (!data?.results?.length) return await reply("❌ Failed to fetch video!");
+        // ✅ Fetch video info
+        const info = await dy_scrap.ytinfo(`https://youtube.com/watch?v=${id}`);
+        if (!info?.result) return await reply("❌ Failed to fetch video info!");
 
-        const { url, title, image, timestamp, ago, views, author } = data.results[0];
+        const { title, duration, views, ago, channel, thumbnail } = info.result;
 
-        let info = `🍄 *𝚂𝙾𝙽𝙶 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳𝙴𝚁* 🍄\n\n` +
-            `🎵 *Title:* ${title || "Unknown"}\n` +
-            `⏳ *Duration:* ${timestamp || "Unknown"}\n` +
-            `👀 *Views:* ${views || "Unknown"}\n` +
-            `🌏 *Release Ago:* ${ago || "Unknown"}\n` +
-            `👤 *Author:* ${author?.name || "Unknown"}\n` +
-            `🖇 *Url:* ${url || "Unknown"}\n\n` +
+        let caption = `🍄 *SONG DOWNLOADER* 🍄\n\n` +
+            `🎵 *Title:* ${title}\n` +
+            `⏳ *Duration:* ${duration}\n` +
+            `👀 *Views:* ${views}\n` +
+            `🌏 *Released:* ${ago}\n` +
+            `👤 *Channel:* ${channel?.name}\n\n` +
             `🔽 *Reply with your choice:*\n` +
             `1.1 *Audio Type* 🎵\n` +
             `1.2 *Document Type* 📁\n\n` +
-            `${config.FOOTER || "𓆩JawadTechX𓆪"}`;
+            `${config.FOOTER || "Zero Bug Zone"}`;
 
-        const sentMsg = await conn.sendMessage(from, { image: { url: image }, caption: info }, { quoted: mek });
-        const messageID = sentMsg.key.id;
-        await conn.sendMessage(from, { react: { text: '🎶', key: sentMsg.key } });
+        const sentMsg = await conn.sendMessage(from, { image: { url: thumbnail }, caption }, { quoted: mek });
 
-        // Listen for user reply only once!
-        conn.ev.on('messages.upsert', async (messageUpdate) => { 
+        // ✅ Listen only to THIS reply
+        const filter = (u) =>
+            u?.message?.extendedTextMessage?.contextInfo?.stanzaId === sentMsg.key.id;
+
+        conn.ev.on("messages.upsert", async (update) => {
             try {
-                const mekInfo = messageUpdate?.messages[0];
-                if (!mekInfo?.message) return;
+                const msg = update.messages[0];
+                if (!msg?.message) return;
+                if (!filter(msg)) return;
 
-                const messageType = mekInfo?.message?.conversation || mekInfo?.message?.extendedTextMessage?.text;
-                const isReplyToSentMsg = mekInfo?.message?.extendedTextMessage?.contextInfo?.stanzaId === messageID;
+                let userReply = msg.message?.conversation || msg.message?.extendedTextMessage?.text;
+                if (!userReply) return;
 
-                if (!isReplyToSentMsg) return;
+                userReply = userReply.trim();
 
-                let userReply = messageType.trim();
-                let msg;
-                let type;
-                let response;
-                
+                // ✅ Download MP3
+                const response = await dy_scrap.ytmp3(`https://youtube.com/watch?v=${id}`);
+                let downloadUrl = response?.result?.download?.url;
+                if (!downloadUrl) return await reply("❌ Download link not found!");
+
                 if (userReply === "1.1") {
-                    msg = await conn.sendMessage(from, { text: "⏳ Processing..." }, { quoted: mek });
-                    response = await dy_scrap.ytmp3(`https://youtube.com/watch?v=${id}`);
-                    let downloadUrl = response?.result?.download?.url;
-                    if (!downloadUrl) return await reply("❌ Download link not found!");
-                    type = { audio: { url: downloadUrl }, mimetype: "audio/mpeg" };
-                    
+                    await conn.sendMessage(from, { audio: { url: downloadUrl }, mimetype: "audio/mpeg" }, { quoted: mek });
                 } else if (userReply === "1.2") {
-                    msg = await conn.sendMessage(from, { text: "⏳ Processing..." }, { quoted: mek });
-                    const response = await dy_scrap.ytmp3(`https://youtube.com/watch?v=${id}`);
-                    let downloadUrl = response?.result?.download?.url;
-                    if (!downloadUrl) return await reply("❌ Download link not found!");
-                    type = { document: { url: downloadUrl }, fileName: `${title}.mp3`, mimetype: "audio/mpeg", caption: title };
-                    
-                } else { 
-                    return await reply("❌ Invalid choice! Reply with 1.1 or 1.2.");
+                    await conn.sendMessage(from, { document: { url: downloadUrl }, fileName: `${title}.mp3`, mimetype: "audio/mpeg", caption: title }, { quoted: mek });
+                } else {
+                    await reply("❌ Invalid choice! Reply with 1.1 or 1.2.");
                 }
-
-                await conn.sendMessage(from, type, { quoted: mek });
-                await conn.sendMessage(from, { text: '✅ Media Upload Successful ✅', edit: msg.key });
-
-            } catch (error) {
-                console.error(error);
-                await reply(`❌ *An error occurred while processing:* ${error.message || "Error!"}`);
+            } catch (err) {
+                console.error("Reply Handler Error:", err.message);
             }
         });
 
     } catch (error) {
         console.error(error);
-        await conn.sendMessage(from, { react: { text: '❌', key: mek.key } });
-        await reply(`❌ *An error occurred:* ${error.message || "Error!"}`);
+        await reply(`❌ *An error occurred:* ${error.message}`);
     }
 });
-                               
