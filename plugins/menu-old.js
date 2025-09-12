@@ -10,6 +10,11 @@ cmd({
 }, 
 async (conn, mek, m, { from, pushname, reply }) => {
     try {
+        // Check image URL
+        if (!config.MENU_IMAGE_URL) {
+            console.log("⚠️ MENU_IMAGE_URL is not set in config.");
+        }
+
         let caption = `
 👋 Hey *${pushname}*,
 
@@ -23,6 +28,7 @@ async (conn, mek, m, { from, pushname, reply }) => {
 📌 Choose a category below 👇
 `;
 
+        // Define buttons
         let buttons = [
             { buttonId: "mainmenu", buttonText: { displayText: "🏠 Main Menu" }, type: 1 },
             { buttonId: "dlmenu", buttonText: { displayText: "⬇️ Download Menu" }, type: 1 },
@@ -34,18 +40,20 @@ async (conn, mek, m, { from, pushname, reply }) => {
             { buttonId: "ownermenu", buttonText: { displayText: "👑 Owner Menu" }, type: 1 }
         ];
 
+        // Build button message
         let buttonMessage = {
-            image: { url: config.MENU_IMAGE_URL },
+            image: { url: config.MENU_IMAGE_URL }, // Must be a valid URL
             caption: caption,
             footer: `© Powered by ${config.BOT_NAME}`,
             buttons: buttons,
-            headerType: 4
+            headerType: 4 // Image header
         };
 
+        // Send message
         await conn.sendMessage(from, buttonMessage, { quoted: mek });
 
     } catch (e) {
-        console.log(e);
-        reply(`${e}`);
+        console.error("Menu Error:", e);
+        reply(`❌ An error occurred: ${e.message}`);
     }
 });
