@@ -13,23 +13,33 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
     try {
+        // Safe fallbacks
         const aliveText = config.ALIVE_TEXT || "Bot is Active & Online!";
+        const botName = config.BOT_NAME || "QUEEN HASUKI BOT";
+        const ownerName = config.OWNER_NAME || "Unknown";
+        const version = "4.0.0";
+        const prefix = config.PREFIX || "!";
+        const mode = config.MODE || "Unknown";
+        const description = config.DESCRIPTION || "Bot is running perfectly!";
+        const imageUrl = config.ALIVE_IMG || "https://i.ibb.co/Y46jgcpL/2289.jpg";
 
+        // Status message
         const status = `
-╭───〔 *🤖 ${config.BOT_NAME} STATUS* 〕───◉
+╭───〔 *🤖 ${botName} STATUS* 〕───◉
 │✨ *${aliveText}*
 │
-│🧠 *Owner:* ${config.OWNER_NAME}
-│⚡ *Version:* 4.0.0
-│📝 *Prefix:* [${config.PREFIX}]
-│📳 *Mode:* [${config.MODE}]
+│🧠 *Owner:* ${ownerName}
+│⚡ *Version:* ${version}
+│📝 *Prefix:* [${prefix}]
+│📳 *Mode:* [${mode}]
 │🖥️ *Host:* ${os.hostname()}
 │⌛ *Uptime:* ${runtime(process.uptime())}
 ╰────────────────────◉
-> ${config.DESCRIPTION}`;
+> ${description}`;
 
+        // Send alive message
         await conn.sendMessage(from, {
-            image: { url: config.ALIVE_IMG },
+            image: { url: imageUrl },
             caption: status,
             contextInfo: {
                 mentionedJid: [m.sender],
@@ -40,6 +50,6 @@ cmd({
 
     } catch (e) {
         console.error("Alive Error:", e);
-        reply(`❌ An error occurred: ${e.message}`);
+        reply(`❌ An error occurred: ${e.message || e}`);
     }
 });
