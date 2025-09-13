@@ -1,108 +1,83 @@
-const fs = require("fs");
-const path = require("path");
-const { cmd } = require("../command");
+const { cmd } = require('../command');
+const config = require('../config');
 
 cmd({
-    pattern: "ban",
-    alias: ["blockuser", "addban"],
-    desc: "Ban a user from using the bot",
-    category: "owner",
-    react: "⛔",
+    pattern: "admin",
+    alias: ["promote", "demote"],
+    desc: "Promote/Demote mentioned or replied user (group admins only)",
+    category: "group",
+    react: "👑",
     filename: __filename
-}, async (conn, mek, m, { from, args, isCreator, reply }) => {
+},
+async (conn, mek, m, { from, sender, isBotAdmins, isGroup, reply, args, react }) => {
     try {
-        if (!isCreator) return reply("_❗Only the bot owner can use this command!_");
-
-        let target = m.mentionedJid?.[0] 
-            || (m.quoted?.sender ?? null)
-            || (args[0]?.replace(/[^0-9]/g, '') + "@s.whatsapp.net");
-
-        if (!target) return reply("❌ Please provide a number or tag/reply a user.");
-
-        let banned = JSON.parse(fs.readFileSync("./lib/ban.json", "utf-8"));
-
-        if (banned.includes(target)) {
-            return reply("❌ This user is already banned.");
+        // Group validation
+        if (!isGroup) {
+            await react("❌");
+            return reply("❌ *This command can only be used in groups.*");
         }
 
-        banned.push(target);
-        fs.writeFileSync("./lib/ban.json", JSON.stringify([...new Set(banned)], null, 2));
-
-        await conn.sendMessage(from, {
-            image: { url: "https://i.ibb.co/Y46jgcpL/2289.jpg" },
-            caption: `⛔ User has been banned from using the bot.`
-        }, { quoted: mek });
-
-    } catch (err) {
-        console.error(err);
-        reply("❌ Error: " + err.message);
-    }
-});
-
-cmd({
-    pattern: "unban",
-    alias: ["removeban"],
-    desc: "Unban a user",
-    category: "owner",
-    react: "✅",
-    filename: __filename
-}, async (conn, mek, m, { from, args, isCreator, reply }) => {
-    try {
-        if (!isCreator) return reply("_❗Only the bot owner can use this command!_");
-
-        let target = m.mentionedJid?.[0] 
-            || (m.quoted?.sender ?? null)
-            || (args[0]?.replace(/[^0-9]/g, '') + "@s.whatsapp.net");
-
-        if (!target) return reply("❌ Please provide a number or tag/reply a user.");
-
-        let banned = JSON.parse(fs.readFileSync("./lib/ban.json", "utf-8"));
-
-        if (!banned.includes(target)) {
-            return reply("❌ This user is not banned.");
+        // Bot admin check
+        if (!isBotAdmins) {
+            await react("❌");
+            return reply("❌ *I need admin privileges to perform this action.*");
         }
 
-        const updated = banned.filter(u => u !== target);
-        fs.writeFileSync("./lib/ban.json", JSON.stringify(updated, null, 2));
+        // Group metadata for admin check
+        const groupMetadata = await conn.groupMetadata(from);
+        const admins = groupMetadata.participants
+            .filter(p => p.admin !== null)
+            .map(p => p.id);
 
-        await conn.sendMessage(from, {
-            image: { url: "https://files.catbox.moe/3y5w8z.jpg" },
-            caption: `✅ User has been unbanned.`
-        }, { quoted: mek });
+        // Check if sender is admin
+        if (!admins.includes(sender)) {
+            await react("🚫");
+            return reply("🚫 *Only group admins can use this command.*");
+        }
 
-    } catch (err) {
-        console.error(err);
-        reply("❌ Error: " + err.message);
-    }
-});
+        // Normalize JID helper
+        const normalizeJid = (jid) => {
+            if (!jid) return jid;
+            return jid.includes('@') ? jid.split('@')[0] + '@s.whatsapp.net' : jid + '@s.whatsapp.net';
+        };
 
-cmd({
-    pattern: "listban",
-    alias: ["banlist", "bannedusers"],
-    desc: "List all banned users",
-    category: "owner",
-    react: "📋",
-    filename: __filename
-}, async (conn, mek, m, { from, isCreator, reply }) => {
-    try {
-        if (!isCreator) return reply("_❗Only the bot owner can use this command!_");
+        // Target user (from mention / reply)
+        const mentioned = m.mentionedJid && m.mentionedJid.length > 0 ? m.mentionedJid[0] : null;
+        const quoted = m.quoted ? m.quoted.sender : null;
+        const target = normalizeJid(mentioned || quoted);
 
-        let banned = JSON.parse(fs.readFileSync("./lib/ban.json", "utf-8"));
-        banned = [...new Set(banned)];
+        if (!target) {
+            return reply("⚠️ *Please mention or reply to a user to promote/demote.*\n\nExample:\n`.admin promote @user`\n`.admin demote @user`");
+        }
 
-        if (banned.length === 0) return reply("✅ No banned users found.");
+        // Action (promote/demote)
+        const action = (args[0] || "").toLowerCase();
+        if (!["promote", "demote"].includes(action)) {
+            return reply("⚠️ *Invalid action.* Use either `promote` or `demote`.\n\nExample:\n`.admin promote @user`\n`.admin demote @user`");
+        }
 
-        let msg = "`⛔ Banned Users:`\n\n";
-        banned.forEach((id, i) => {
-            msg += `${i + 1}. ${id.replace("@s.whatsapp.net", "")}\n`;
-        });
+        // Already admin check
+        const targetParticipant = groupMetadata.participants.find(p => p.id === target);
+        if (action === "promote" && targetParticipant?.admin) {
+            return reply("ℹ️ *That user is already an admin.*");
+        }
+        if (action === "demote" && !targetParticipant?.admin) {
+            return reply("ℹ️ *That user is not an admin.*");
+        }
 
-        await conn.sendMessage(from, {
-            image: { url: "https://files.catbox.moe/3y5w8z.jpg" },
-            caption: msg
-        }, { quoted: mek });
-    } catch (err) {
-        console.error(err);
-        reply("❌ Error: " + err.message);
+        // Perform action
+        await conn.groupParticipantsUpdate(from, [target], action);
+        await react("✅");
+
+        return reply(
+            action === "promote"
+                ? `👑 *${target.split('@')[0]} is now an admin!*`
+                : `⚠️ *${target.split('@')[0]} has been demoted from admin.*`
+        );
+
+    } catch (error) {
+        console.error("Admin command error:", error);
+        await react("❌");
+        return reply("⚠️ *Failed to update admin rights.*\n\n💡 Error: " + error.message);
     }
 });
