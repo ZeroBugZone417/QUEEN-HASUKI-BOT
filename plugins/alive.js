@@ -22,25 +22,29 @@ cmd({
         const prefix = config.PREFIX || "!";
         const mode = config.MODE || "Unknown";
         const description = config.DESCRIPTION || "Bot is running perfectly!";
-        const imageUrl = config.ALIVE_IMG || "https://i.ibb.co/Y46jgcpL/2289.jpg";
+
+        // Use only GitHub raw image
+        const imageUrl = "https://raw.githubusercontent.com/ZeroBugZone417/QUEEN-HASUKI-BOT/main/lib/QUEEN%20HASUKI.png";
 
         // Extra info
         const user = m.pushName || "User";
         const time = moment().tz("Asia/Colombo").format("YYYY-MM-DD HH:mm:ss");
 
         // Status message
-        const status = ` ╭───〔 *🤖 ${botName} STATUS* 〕───◉
- │🙋 *User:* ${user}
- │✨ *${aliveText}*
- │🧠 *Owner:* ${ownerName}
- │⚡ *Version:* ${version}
- │📝 *Prefix:* [${prefix}]
- │📳 *Mode:* [${mode}]
- │🖥️ *Host:* ${os.hostname()}
- │⌛ *Uptime:* ${runtime(process.uptime())}
- │⏰ *Time:* ${time}
- ╰────────────────────◉
- > ${description}`;
+        const status = (`
+╭───〔 *🤖 ${botName} STATUS* 〕───◉
+│🙋 *User:* ${user}
+│✨ *${aliveText}*
+│🧠 *Owner:* ${ownerName}
+│⚡ *Version:* ${version}
+│📝 *Prefix:* [${prefix}]
+│📳 *Mode:* [${mode}]
+│🖥️ *Host:* ${os.hostname()}
+│⌛ *Uptime:* ${runtime(process.uptime())}
+│⏰ *Time:* ${time}
+╰────────────────────◉
+> ${description}
+`).trim();
 
         // Send alive message
         await conn.sendMessage(from, {
